@@ -9,6 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      central_government_schemes: {
+        Row: {
+          application_process: string | null
+          benefits: string | null
+          category: string | null
+          created_at: string
+          department: string | null
+          description: string | null
+          eligibility_criteria: string | null
+          funding_pattern: string | null
+          id: string
+          implementation_agency: string | null
+          launch_date: string | null
+          ministry: string | null
+          objectives: string | null
+          required_documents: string | null
+          scheme_code: string | null
+          scheme_name: string
+          scheme_url: string | null
+          scraped_at: string | null
+          status: string | null
+          target_beneficiaries: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_process?: string | null
+          benefits?: string | null
+          category?: string | null
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          eligibility_criteria?: string | null
+          funding_pattern?: string | null
+          id?: string
+          implementation_agency?: string | null
+          launch_date?: string | null
+          ministry?: string | null
+          objectives?: string | null
+          required_documents?: string | null
+          scheme_code?: string | null
+          scheme_name: string
+          scheme_url?: string | null
+          scraped_at?: string | null
+          status?: string | null
+          target_beneficiaries?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_process?: string | null
+          benefits?: string | null
+          category?: string | null
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          eligibility_criteria?: string | null
+          funding_pattern?: string | null
+          id?: string
+          implementation_agency?: string | null
+          launch_date?: string | null
+          ministry?: string | null
+          objectives?: string | null
+          required_documents?: string | null
+          scheme_code?: string | null
+          scheme_name?: string
+          scheme_url?: string | null
+          scraped_at?: string | null
+          status?: string | null
+          target_beneficiaries?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       external_schemes: {
         Row: {
           application_process: string | null
@@ -214,6 +286,117 @@ export type Database = {
             columns: ["scheme_id"]
             isOneToOne: false
             referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheme_beneficiaries: {
+        Row: {
+          age_group: string | null
+          beneficiary_type: string
+          caste_criteria: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          income_criteria: string | null
+          location_criteria: string | null
+          scheme_id: string | null
+        }
+        Insert: {
+          age_group?: string | null
+          beneficiary_type: string
+          caste_criteria?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          income_criteria?: string | null
+          location_criteria?: string | null
+          scheme_id?: string | null
+        }
+        Update: {
+          age_group?: string | null
+          beneficiary_type?: string
+          caste_criteria?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          income_criteria?: string | null
+          location_criteria?: string | null
+          scheme_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheme_beneficiaries_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "central_government_schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheme_categories: {
+        Row: {
+          category_name: string
+          created_at: string
+          id: string
+          scheme_id: string | null
+          sub_category: string | null
+        }
+        Insert: {
+          category_name: string
+          created_at?: string
+          id?: string
+          scheme_id?: string | null
+          sub_category?: string | null
+        }
+        Update: {
+          category_name?: string
+          created_at?: string
+          id?: string
+          scheme_id?: string | null
+          sub_category?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheme_categories_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "central_government_schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheme_documents: {
+        Row: {
+          created_at: string
+          document_name: string
+          document_type: string | null
+          id: string
+          is_mandatory: boolean | null
+          scheme_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_name: string
+          document_type?: string | null
+          id?: string
+          is_mandatory?: boolean | null
+          scheme_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_name?: string
+          document_type?: string | null
+          id?: string
+          is_mandatory?: boolean | null
+          scheme_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheme_documents_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "central_government_schemes"
             referencedColumns: ["id"]
           },
         ]

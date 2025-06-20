@@ -85,12 +85,22 @@ const SchemeFinderPage = () => {
   const fetchSchemes = async () => {
     try {
       setLoading(true);
+      
+      // Fetch regular schemes
       const { data: schemesData, error: schemesError } = await supabase
         .from('schemes')
         .select('*')
         .eq('status', 'active');
 
       if (schemesError) throw schemesError;
+
+      // Fetch central government schemes
+      const { data: centralSchemesData, error: centralSchemesError } = await supabase
+        .from('central_government_schemes')
+        .select('*')
+        .eq('status', 'active');
+
+      if (centralSchemesError) throw centralSchemesError;
 
       const { data: translationsData, error: translationsError } = await supabase
         .from('scheme_translations')
@@ -99,6 +109,7 @@ const SchemeFinderPage = () => {
 
       if (translationsError) throw translationsError;
 
+      // Process regular schemes
       const schemesWithTranslations = schemesData?.map(scheme => {
         const translation = translationsData?.find(t => t.scheme_id === scheme.id);
         return {
@@ -114,7 +125,26 @@ const SchemeFinderPage = () => {
         };
       }) || [];
 
-      setSchemes(schemesWithTranslations);
+      // Process central government schemes
+      const centralSchemes = centralSchemesData?.map(scheme => ({
+        id: scheme.id,
+        key: scheme.scheme_code || scheme.id,
+        category: scheme.category || 'other',
+        status: scheme.status,
+        created_at: scheme.created_at,
+        scheme_type: 'central' as 'central' | 'state',
+        translations: {
+          title: scheme.scheme_name,
+          description: scheme.description || '',
+          benefits: scheme.benefits ? [scheme.benefits] : [],
+          eligibility: scheme.eligibility_criteria ? [scheme.eligibility_criteria] : [],
+          documents: scheme.required_documents ? scheme.required_documents.split(',').map(doc => doc.trim()) : []
+        }
+      })) || [];
+
+      // Combine all schemes
+      const allSchemes = [...schemesWithTranslations, ...centralSchemes];
+      setSchemes(allSchemes);
     } catch (error) {
       console.error('Error fetching schemes:', error);
     } finally {
