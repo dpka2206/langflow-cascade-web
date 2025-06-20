@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Home, Search, Info, Phone, UserCog, Bell, User } from 'lucide-react';
+import { Home, Search, UserCog, Bell, User } from 'lucide-react';
 
 interface MobileNavigationProps {
   isOpen: boolean;
@@ -19,8 +19,6 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => {
     { key: 'nav.home', href: '/', icon: Home },
     { key: 'nav.schemes', href: '/schemes', icon: Search },
     { key: 'nav.personalizedSchemes', href: '/personalized-finder', icon: UserCog },
-    { key: 'nav.about', href: '/#about', icon: Info },
-    { key: 'nav.contact', href: '/#contact', icon: Phone },
   ];
 
   const handleNavClick = (href: string) => {

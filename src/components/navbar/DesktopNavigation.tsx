@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useNavigate } from 'react-router-dom';
-import { Home, Search, Info, Phone, UserCog } from 'lucide-react';
+import { Home, Search, UserCog } from 'lucide-react';
 
 const DesktopNavigation = () => {
   const { t } = useTranslation();
@@ -11,8 +12,6 @@ const DesktopNavigation = () => {
     { key: 'nav.home', href: '/', icon: Home },
     { key: 'nav.schemes', href: '/schemes', icon: Search },
     { key: 'nav.personalizedSchemes', href: '/personalized-finder', icon: UserCog },
-    { key: 'nav.about', href: '/#about', icon: Info },
-    { key: 'nav.contact', href: '/#contact', icon: Phone },
   ];
 
   const handleNavClick = (href: string) => {
