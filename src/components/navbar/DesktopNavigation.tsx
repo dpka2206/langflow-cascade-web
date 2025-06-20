@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useNavigate } from 'react-router-dom';
