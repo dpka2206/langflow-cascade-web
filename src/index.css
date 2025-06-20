@@ -96,16 +96,35 @@
   }
 }
 
-/* Textured squares pattern */
+/* Enhanced textured squares pattern */
 @layer utilities {
   .textured-squares {
     background-image: 
-      linear-gradient(45deg, rgba(147, 51, 234, 0.05) 25%, transparent 25%), 
-      linear-gradient(-45deg, rgba(147, 51, 234, 0.05) 25%, transparent 25%), 
-      linear-gradient(45deg, transparent 75%, rgba(147, 51, 234, 0.05) 75%), 
-      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234, 0.05) 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      linear-gradient(45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
+      linear-gradient(-45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, rgba(147, 51, 234, 0.08) 75%), 
+      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234, 0.08) 75%);
+    background-size: 30px 30px;
+    background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
+  }
+
+  /* Glossy transparent card styles */
+  .glossy-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 8px 32px 0 rgba(31, 38, 135, 0.37),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .glossy-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 40px 0 rgba(31, 38, 135, 0.4),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
   }
 
   .animate-fade-in {

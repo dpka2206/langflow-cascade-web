@@ -91,14 +91,14 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Enhanced Stats Section */}
+          {/* Enhanced Stats Section with Glossy Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto animate-fade-in-delay">
             {stats.map((stat, index) => (
               <div 
                 key={index}
-                className="text-center p-8 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-500 hover:scale-105 hover:shadow-2xl group"
+                className="text-center p-8 rounded-3xl glossy-card group"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-all duration-300 backdrop-blur-sm">
                   <stat.icon className="h-8 w-8 text-white group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="text-4xl font-bold mb-3 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
