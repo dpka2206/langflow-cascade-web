@@ -9,6 +9,72 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      external_schemes: {
+        Row: {
+          application_process: string | null
+          benefits: Json | null
+          category: string | null
+          created_at: string
+          description: string | null
+          eligibility_criteria: Json | null
+          id: string
+          required_documents: Json | null
+          scheme_name: string
+          scheme_type: string | null
+          source_url: string | null
+          status: string | null
+          target_age_range: string | null
+          target_caste: string[] | null
+          target_gender: string[] | null
+          target_income_range: string | null
+          target_occupation: string[] | null
+          target_state: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          application_process?: string | null
+          benefits?: Json | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          eligibility_criteria?: Json | null
+          id?: string
+          required_documents?: Json | null
+          scheme_name: string
+          scheme_type?: string | null
+          source_url?: string | null
+          status?: string | null
+          target_age_range?: string | null
+          target_caste?: string[] | null
+          target_gender?: string[] | null
+          target_income_range?: string | null
+          target_occupation?: string[] | null
+          target_state?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          application_process?: string | null
+          benefits?: Json | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          eligibility_criteria?: Json | null
+          id?: string
+          required_documents?: Json | null
+          scheme_name?: string
+          scheme_type?: string | null
+          source_url?: string | null
+          status?: string | null
+          target_age_range?: string | null
+          target_caste?: string[] | null
+          target_gender?: string[] | null
+          target_income_range?: string | null
+          target_occupation?: string[] | null
+          target_state?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notification_logs: {
         Row: {
           channel: string
@@ -226,6 +292,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_personalized_criteria: {
+        Row: {
+          age: string | null
+          caste: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          income: string | null
+          occupation: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: string | null
+          caste?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          income?: string | null
+          occupation?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: string | null
+          caste?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          income?: string | null
+          occupation?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_scheme_interactions: {
         Row: {
           created_at: string | null
@@ -263,6 +368,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_personalized_schemes: {
+        Args: { user_criteria: Json }
+        Returns: {
+          id: string
+          scheme_name: string
+          description: string
+          category: string
+          scheme_type: string
+          eligibility_criteria: Json
+          benefits: Json
+          match_score: number
+        }[]
+      }
       get_user_role: {
         Args: { user_id: string }
         Returns: Database["public"]["Enums"]["user_role"]

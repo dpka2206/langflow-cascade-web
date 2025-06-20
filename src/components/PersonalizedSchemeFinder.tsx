@@ -1,10 +1,12 @@
-
 import React, { useState } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import StepIndicator from './wizard/StepIndicator';
 import GenderStep from './wizard/GenderStep';
 import AgeStep from './wizard/AgeStep';
@@ -24,8 +26,10 @@ export interface WizardData {
 
 const PersonalizedSchemeFinder = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<WizardData>({
     gender: '',
     age: '',
@@ -55,18 +59,95 @@ const PersonalizedSchemeFinder = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Navigate to schemes page with filters
-    const params = new URLSearchParams({
-      gender: data.gender,
-      age: data.age,
-      occupation: data.occupation,
-      income: data.income,
-      caste: data.caste,
-      state: data.state,
-      personalized: 'true'
-    });
-    navigate(`/schemes?${params.toString()}`);
+  const saveUserCriteria = async (criteriaData: WizardData) => {
+    if (!user) {
+      toast.error('Please login to save your preferences');
+      navigate('/auth');
+      return false;
+    }
+
+    try {
+      // Check if user already has criteria saved
+      const { data: existingCriteria } = await supabase
+        .from('user_personalized_criteria')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (existingCriteria) {
+        // Update existing criteria
+        const { error } = await supabase
+          .from('user_personalized_criteria')
+          .update({
+            gender: criteriaData.gender,
+            age: criteriaData.age,
+            occupation: criteriaData.occupation,
+            income: criteriaData.income,
+            caste: criteriaData.caste,
+            state: criteriaData.state,
+          })
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+      } else {
+        // Insert new criteria
+        const { error } = await supabase
+          .from('user_personalized_criteria')
+          .insert({
+            user_id: user.id,
+            gender: criteriaData.gender,
+            age: criteriaData.age,
+            occupation: criteriaData.occupation,
+            income: criteriaData.income,
+            caste: criteriaData.caste,
+            state: criteriaData.state,
+          });
+
+        if (error) throw error;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error saving user criteria:', error);
+      toast.error('Failed to save your preferences');
+      return false;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!user) {
+      toast.error('Please login to continue');
+      navigate('/auth');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Save user criteria to database
+      const saved = await saveUserCriteria(data);
+      
+      if (saved) {
+        toast.success('Your preferences have been saved!');
+        
+        // Navigate to schemes page with personalized results
+        const params = new URLSearchParams({
+          gender: data.gender,
+          age: data.age,
+          occupation: data.occupation,
+          income: data.income,
+          caste: data.caste,
+          state: data.state,
+          personalized: 'true'
+        });
+        navigate(`/schemes?${params.toString()}`);
+      }
+    } catch (error) {
+      console.error('Error in handleSubmit:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isStepValid = () => {
@@ -110,6 +191,13 @@ const PersonalizedSchemeFinder = () => {
           <p className="text-lg text-gray-600">
             {t('wizard.subtitle')}
           </p>
+          {!user && (
+            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-yellow-800">
+                Please <Link to="/auth" className="text-yellow-900 underline font-semibold">login</Link> to save your preferences and get personalized recommendations.
+              </p>
+            </div>
+          )}
         </div>
 
         <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
@@ -133,10 +221,15 @@ const PersonalizedSchemeFinder = () => {
 
               <Button
                 onClick={handleNext}
-                disabled={!isStepValid()}
+                disabled={!isStepValid() || loading}
                 className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
-                {currentStep === totalSteps ? (
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Saving...
+                  </>
+                ) : currentStep === totalSteps ? (
                   <>
                     <Check className="h-4 w-4 mr-2" />
                     {t('wizard.findSchemes')}

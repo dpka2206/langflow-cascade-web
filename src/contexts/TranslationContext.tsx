@@ -1,386 +1,221 @@
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-import React, { createContext, useContext } from 'react';
+type Language = 'en' | 'te';
 
-interface TranslationContextProps {
-  language: string;
-  setLanguage: (lang: string) => void;
-  t: (key: string, options?: any) => string;
+interface TranslationContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
 }
 
-const TranslationContext = createContext<TranslationContextProps>({
-  language: 'en',
-  setLanguage: () => {},
-  t: (key: string) => key,
-});
+const translations = {
+  en: {
+    // Navigation
+    'nav.title': 'Government Schemes Portal',
+    'nav.home': 'Home',
+    'nav.schemes': 'Find Schemes',
+    'nav.personalizedSchemes': 'Personalized Schemes',
+    'nav.about': 'About Us',
+    'nav.contact': 'Contact',
+    'nav.login': 'Sign In',
+    'nav.dashboard': 'My Dashboard',
+    'nav.admin': 'Admin Panel',
+    'nav.signout': 'Sign Out',
+    
+    // Wizard
+    'wizard.title': 'Personalized Scheme Finder',
+    'wizard.subtitle': 'Answer a few questions to find schemes tailored for you.',
+    'wizard.gender.title': 'Select Your Gender',
+    'wizard.gender.subtitle': 'This helps us find schemes specifically for your gender.',
+    'wizard.gender.male': 'Male',
+    'wizard.gender.female': 'Female',
+    'wizard.gender.other': 'Other',
+    'wizard.age.title': 'Select Your Age Group',
+    'wizard.age.subtitle': 'This helps us find schemes relevant to your age.',
+    'wizard.age.under18': 'Under 18',
+    'wizard.age.young': '18-35',
+    'wizard.age.middle': '36-60',
+    'wizard.age.senior': 'Above 60',
+    'wizard.occupation.title': 'Select Your Occupation',
+    'wizard.occupation.subtitle': 'This helps us find schemes based on your employment status.',
+    'wizard.occupation.farmer': 'Farmer',
+    'wizard.occupation.student': 'Student',
+    'wizard.occupation.employed': 'Employed',
+    'wizard.occupation.selfEmployed': 'Self-Employed',
+    'wizard.occupation.unemployed': 'Unemployed',
+    'wizard.occupation.healthcare': 'Healthcare Professional',
+    'wizard.income.title': 'Select Your Income Group',
+    'wizard.income.subtitle': 'This helps us find schemes based on your income level.',
+    'wizard.income.below2lakh': 'Below 2 Lakh',
+    'wizard.income.between2and5lakh': '2-5 Lakh',
+    'wizard.income.between5and10lakh': '5-10 Lakh',
+    'wizard.income.above10lakh': 'Above 10 Lakh',
+    'wizard.caste.title': 'Select Your Caste Category',
+    'wizard.caste.subtitle': 'This helps us find schemes specific to your caste.',
+    'wizard.caste.general': 'General',
+    'wizard.caste.obc': 'OBC',
+    'wizard.caste.sc': 'SC',
+    'wizard.caste.st': 'ST',
+    'wizard.state.title': 'Select Your State',
+    'wizard.state.subtitle': 'This helps us find schemes available in your state.',
+    'wizard.findSchemes': 'Find Schemes',
 
-export const useTranslation = () => useContext(TranslationContext);
+    // Common
+    'common.next': 'Next',
+    'common.back': 'Back',
 
-export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = React.useState<string>('en');
+    // Scheme Cards
+    'scheme.eligibility': 'Eligibility',
+    'scheme.benefits': 'Benefits',
+    'scheme.applyNow': 'Apply Now',
+    'scheme.viewDetails': 'View Details',
 
-  const translations = {
-    en: {
-      common: {
-        apply: 'Apply Now',
-        learnMore: 'Learn More',
-        eligibility: 'Eligibility',
-        benefit: 'Benefit',
-        back: 'Back',
-        next: 'Next',
-        previous: 'Previous',
-        submit: 'Submit',
-        step: 'Step',
-        of: 'of',
-        complete: 'Complete',
-      },
-      nav: {
-        title: 'Government Schemes Portal',
-        home: 'Home',
-        schemes: 'Browse Schemes',
-        about: 'About Us',
-        contact: 'Contact Us',
-        login: 'Sign In',
-        signup: 'Sign Up',
-        signout: 'Sign Out',
-        dashboard: 'My Dashboard',
-        admin: 'Admin Panel',
-        language: 'Language',
-      },
-      hero: {
-        title: 'Discover Government Schemes Made for You',
-        subtitle: 'Find and apply for government schemes and benefits that match your profile. Simplifying access to government services for every citizen.',
-        getStarted: 'Get Started',
-        exploreSchemes: 'Explore All Schemes',
-      },
-      navbar: {
-        schemeFinder: 'Scheme Finder',
-        personalizedSchemeFinder: 'Personalized Scheme Finder',
-        aboutUs: 'About Us',
-        contact: 'Contact',
-        language: 'Language',
-      },
-      schemeFinder: {
-        title: 'Find Your Perfect Scheme',
-        subtitle: 'Discover government schemes tailored to your needs',
-        personalizedResults: 'Your Personalized Schemes',
-        personalizedSubtitle: 'Based on your profile, here are the schemes that match your eligibility',
-        centralSchemes: 'Central Government Schemes',
-        stateSchemes: 'State Government Schemes',
-        allSchemes: 'All Available Schemes',
-        central: 'Central',
-        state: 'State',
-        filters: 'Filter Options',
-        searchPlaceholder: 'Search for schemes by name or keyword...',
-        noResults: 'No schemes found matching your criteria',
-        noResultsSearch: 'Try adjusting your search terms or filters',
-        noResultsFilter: 'Try changing your filter selections',
-        resultsFound: 'schemes found',
-        knowMore: 'View Details',
-        noDescription: 'Description not available'
-      },
-      category: {
-        health: 'Healthcare & Medical',
-        employment: 'Employment & Skills',
-        agriculture: 'Agriculture & Farming',
-        education: 'Education & Learning',
-        housing: 'Housing & Shelter',
-        social: 'Social Welfare',
-      },
-      wizard: {
-        title: 'Find Schemes That Match Your Profile',
-        subtitle: 'Answer a few questions to discover government schemes designed specifically for your situation.',
-        findSchemes: 'Find My Schemes',
-        gender: {
-          title: 'What is your gender?',
-          subtitle: 'Please select your gender to help us find relevant schemes',
-          male: 'Male',
-          female: 'Female',
-          other: 'Other',
-        },
-        age: {
-          title: 'What is your age group?',
-          subtitle: 'Select your age group to filter age-specific schemes',
-          under18: 'Under 18 years',
-          young: '18-35 years',
-          middle: '36-60 years',
-          senior: 'Above 60 years',
-        },
-        occupation: {
-          title: 'What is your current occupation?',
-          subtitle: 'Your occupation helps us find relevant employment and skill-based schemes',
-          farmer: 'Farmer/Agricultural Worker',
-          student: 'Student',
-          employed: 'Employed (Private/Government)',
-          selfEmployed: 'Self-Employed/Business Owner',
-          unemployed: 'Currently Unemployed',
-          healthcare: 'Healthcare Professional',
-        },
-        income: {
-          title: 'What is your annual household income?',
-          subtitle: 'Income information helps us find schemes based on economic eligibility criteria',
-          below2lakh: 'Below ₹2,00,000',
-          between2and5lakh: '₹2,00,000 - ₹5,00,000',
-          between5and10lakh: '₹5,00,000 - ₹10,00,000',
-          above10lakh: 'Above ₹10,00,000',
-        },
-        caste: {
-          title: 'What is your social category?',
-          subtitle: 'This helps us find schemes available for specific social categories',
-          general: 'General Category',
-          obc: 'Other Backward Classes (OBC)',
-          sc: 'Scheduled Caste (SC)',
-          st: 'Scheduled Tribe (ST)',
-        },
-        state: {
-          title: 'Which state/union territory do you belong to?',
-          subtitle: 'Your location helps us find relevant state-specific schemes and programs',
-        },
-      },
-      schemeDetail: {
-        overview: 'Scheme Overview',
-        eligibility: 'Eligibility Requirements',
-        documents: 'Required Documents',
-        howToApply: 'Application Process',
-        videoComingSoon: 'Video tutorial coming soon',
-        description: 'Scheme Description',
-        noDescription: 'Scheme description not available',
-        benefits: 'Benefits & Features',
-        eligibilityCriteria: 'Who Can Apply',
-        noEligibility: 'Eligibility criteria not specified',
-        requiredDocuments: 'Documents You Need',
-        noDocuments: 'Document requirements not specified',
-        applicationProcess: 'How to Apply',
-        step1: 'Review eligibility criteria and gather all required documents',
-        step2: 'Fill out the application form with accurate information',
-        step3: 'Submit your application and track its progress online',
-        applyOnline: 'Apply Online',
-        applyNow: 'Start Application',
-        downloadForm: 'Download Application Form'
-      },
-      application: {
-        title: 'Government Scheme Application',
-        step: 'Step',
-        of: 'of',
-        complete: 'Application Complete',
-        personalInfo: 'Personal Information',
-        documents: 'Document Upload',
-        summary: 'Application Summary',
-        fullName: 'Full Name as per Aadhaar',
-        email: 'Email Address',
-        phone: 'Mobile Number',
-        address: 'Residential Address',
-        dateOfBirth: 'Date of Birth',
-        occupation: 'Current Occupation',
-        income: 'Annual Income',
-        upload: 'Upload Document',
-        uploading: 'Uploading document...',
-        invalidFile: 'Invalid file format. Please upload PDF, JPG, or PNG files only.',
-        loginRequired: 'Please sign in to your account to apply for this scheme.',
-        submitting: 'Submitting your application...',
-        submitted: 'Application submitted successfully! You will receive updates via email and SMS.',
-        submitError: 'Failed to submit application. Please check your details and try again.',
-      },
-      footer: {
-        about: 'About This Portal',
-        privacy: 'Privacy Policy',
-        terms: 'Terms of Service',
-        help: 'Help & Support',
-        copyright: '© 2024 Government Schemes Portal. All rights reserved.',
-      }
-    },
-    te: {
-      common: {
-        apply: 'ఇప్పుడే దరఖాస్తు చేయండి',
-        learnMore: 'మరింత తెలుసుకోండి',
-        eligibility: 'అర్హత',
-        benefit: 'ప్రయోజనం',
-        back: 'వెనుకకు',
-        next: 'తరువాత',
-        previous: 'మునుపటి',
-        submit: 'సమర్పించండి',
-        step: 'దశ',
-        of: 'లో',
-        complete: 'పూర్తి',
-      },
-      nav: {
-        title: 'ప్రభుత్వ పథకాల పోర్టల్',
-        home: 'హోమ్',
-        schemes: 'పథకాలను చూడండి',
-        about: 'మా గురించి',
-        contact: 'సంప్రదించండి',
-        login: 'లాగిన్',
-        signup: 'సైన్ అప్',
-        signout: 'లాగ్ అవుట్',
-        dashboard: 'నా డాష్‌బోర్డ్',
-        admin: 'అడ్మిన్ ప్యానెల్',
-        language: 'భాష',
-      },
-      hero: {
-        title: 'మీ కోసం రూపొందించిన ప్రభుత్వ పథకాలను కనుగొనండి',
-        subtitle: 'మీ ప్రొఫైల్‌కు సరిపోయే ప్రభుత్వ పథకాలు మరియు ప్రయోజనాలను కనుగొని దరఖాస్తు చేయండి. ప్రతి పౌరుడికి ప్రభుత్వ సేవల యాక్సెస్‌ను సులభతరం చేస్తోంది.',
-        getStarted: 'ప్రారంభించండి',
-        exploreSchemes: 'అన్ని పథకాలను అన్వేషించండి',
-      },
-      navbar: {
-        schemeFinder: 'పథకం ఫైండర్',
-        personalizedSchemeFinder: 'వ్యక్తిగతీకరించిన పథకం ఫైండర్',
-        aboutUs: 'మా గురించి',
-        contact: 'సంప్రదించండి',
-        language: 'భాష',
-      },
-      schemeFinder: {
-        title: 'మీకు సరిపోయే పథకాన్ని కనుగొనండి',
-        subtitle: 'మీ అవసరాలకు అనుకూలంగా ప్రభుత్వ పథకాలను కనుగొనండి',
-        personalizedResults: 'మీ వ్యక్తిగత పథకాలు',
-        personalizedSubtitle: 'మీ ప్రొఫైల్ ఆధారంగా, మీ అర్హతకు సరిపోయే పథకాలు ఇవి',
-        centralSchemes: 'కేంద్ర ప్రభుత్వ పథకాలు',
-        stateSchemes: 'రాష్ట్ర ప్రభుత్వ పథకాలు',
-        allSchemes: 'అన్ని అందుబాటులో ఉన్న పథకాలు',
-        central: 'కేంద్రం',
-        state: 'రాష్ట్రం',
-        filters: 'ఫిల్టర్ ఎంపికలు',
-        searchPlaceholder: 'పేరు లేదా కీవర్డ్ ద్వారా పథకాలను వెతకండి...',
-        noResults: 'మీ ప్రమాణాలకు సరిపోయే పథకాలు దొరకలేదు',
-        noResultsSearch: 'మీ వెతుకుట పదాలు లేదా ఫిల్టర్లను సర్దుబాటు చేయండి',
-        noResultsFilter: 'మీ ఫిల్టర్ ఎంపికలను మార్చండి',
-        resultsFound: 'పథకాలు దొరికాయి',
-        knowMore: 'వివరాలు చూడండి',
-        noDescription: 'వివరణ అందుబాటులో లేదు'
-      },
-      category: {
-        health: 'ఆరోగ్య సంరక్షణ & వైద్యం',
-        employment: 'ఉపాధి & నైపుణ్యాలు',
-        agriculture: 'వ్యవసాయం & కృషి',
-        education: 'విద్య & అభ్యాసం',
-        housing: 'గృహాలు & ఆశ్రయం',
-        social: 'సామాజిక సంక్షేమం',
-      },
-      wizard: {
-        title: 'మీ ప్రొఫైల్‌కు సరిపోయే పథకాలను కనుగొనండి',
-        subtitle: 'మీ పరిస్థితికి ప్రత్యేకంగా రూపొందించిన ప్రభుత్వ పథకాలను కనుగొనడానికి కొన్ని ప్రశ్నలకు సమాధానం ఇవ్వండి.',
-        findSchemes: 'నా పథకాలను కనుగొనండి',
-        gender: {
-          title: 'మీ లింగం ఏమిటి?',
-          subtitle: 'సంబంధిత పథకాలను కనుగొనడానికి దయచేసి మీ లింగాన్ని ఎంచుకోండి',
-          male: 'పురుషుడు',
-          female: 'స్త్రీ',
-          other: 'ఇతర',
-        },
-        age: {
-          title: 'మీ వయస్సు సమూహం ఏమిటి?',
-          subtitle: 'వయస్సు-నిర్దిష్ట పథకాలను ఫిల్టర్ చేయడానికి మీ వయస్సు సమూహాన్ని ఎంచుకోండి',
-          under18: '18 సంవత్సరాలకు తక్కువ',
-          young: '18-35 సంవత్సరాలు',
-          middle: '36-60 సంవత్సరాలు',
-          senior: '60 సంవత్సరాలకు మించి',
-        },
-        occupation: {
-          title: 'మీ ప్రస్తుత వృత్తి ఏమిటి?',
-          subtitle: 'మీ వృత్తి సంబంధిత ఉపాధి మరియు నైపుణ్య-ఆధారిత పథకాలను కనుగొనడంలో సహాయపడుతుంది',
-          farmer: 'రైతు/వ్యవసాయ కార్మికుడు',
-          student: 'విద్యార్థి',
-          employed: 'ఉద్యోగి (ప్రైవేట్/ప్రభుత్వం)',
-          selfEmployed: 'స్వయం ఉపాధి/వ్యాపార యజమాని',
-          unemployed: 'ప్రస్తుతం నిరుద్యోగి',
-          healthcare: 'ఆరోగ్య సంరక్షణ వృత్తిపరుడు',
-        },
-        income: {
-          title: 'మీ వార్షిక కుటుంబ ఆదాయం ఎంత?',
-          subtitle: 'ఆర్థిక అర్హత ప్రమాణాల ఆధారంగా పథకాలను కనుగొనడంలో ఆదాయ సమాచారం సహాయపడుతుంది',
-          below2lakh: '₹2,00,000 కంటే తక్కువ',
-          between2and5lakh: '₹2,00,000 - ₹5,00,000',
-          between5and10lakh: '₹5,00,000 - ₹10,00,000',
-          above10lakh: '₹10,00,000 కంటే ఎక్కువ',
-        },
-        caste: {
-          title: 'మీ సామాజిక వర్గం ఏమిటి?',
-          subtitle: 'ఇది నిర్దిష్ట సామాజిక వర్గాలకు అందుబాటులో ఉన్న పథకాలను కనుగొనడంలో సహాయపడుతుంది',
-          general: 'సాధారణ వర్గం',
-          obc: 'ఇతర వెనుకబడిన తరగతులు (OBC)',
-          sc: 'షెడ్యూల్డ్ కులం (SC)',
-          st: 'షెడ్యూల్డ్ తెగ (ST)',
-        },
-        state: {
-          title: 'మీరు ఏ రాష్ట్రం/కేంద్రపాలిత ప్రాంతానికి చెందినవారు?',
-          subtitle: 'మీ స్థానం సంబంధిత రాష్ట్ర-నిర్దిష్ట పథకాలు మరియు కార్యక్రమాలను కనుగొనడంలో సహాయపడుతుంది',
-        },
-      },
-      schemeDetail: {
-        overview: 'పథకం అవలోకనం',
-        eligibility: 'అర్హత అవసరాలు',
-        documents: 'అవసరమైన పత్రాలు',
-        howToApply: 'దరఖాస్తు ప్రక్రియ',
-        videoComingSoon: 'వీడియో ట్యుటోరియల్ త్వరలో',
-        description: 'పథకం వివరణ',
-        noDescription: 'పథకం వివరణ అందుబాటులో లేదు',
-        benefits: 'ప్రయోజనాలు & లక్షణాలు',
-        eligibilityCriteria: 'ఎవరు దరఖాస్తు చేయవచ్చు',
-        noEligibility: 'అర్హత ప్రమాణాలు పేర్కొనలేదు',
-        requiredDocuments: 'మీకు అవసరమైన పత్రాలు',
-        noDocuments: 'పత్రాల అవసరాలు పేర్కొనలేదు',
-        applicationProcess: 'ఎలా దరఖాస్తు చేయాలి',
-        step1: 'అర్హత ప్రమాణాలను సమీక్షించండి మరియు అవసరమైన అన్ని పత్రాలను సేకరించండి',
-        step2: 'ఖచ్చితమైన సమాచారంతో దరఖాస్తు ఫారాన్ని పూరించండి',
-        step3: 'మీ దరఖాస్తును సమర్పించండి మరియు దాని పురోగతిని ఆన్‌లైన్‌లో ట్రాక్ చేయండి',
-        applyOnline: 'ఆన్‌లైన్‌లో దరఖాస్తు చేయండి',
-        applyNow: 'దరఖాస్తు ప్రారంభించండి',
-        downloadForm: 'దరఖాస్తు ఫారాన్ని డౌన్‌లోడ్ చేయండి'
-      },
-      application: {
-        title: 'ప్రభుత్వ పథకం దరఖాస్తు',
-        step: 'దశ',
-        of: 'లో',
-        complete: 'దరఖాస్తు పూర్తి',
-        personalInfo: 'వ్యక్తిగత సమాచారం',
-        documents: 'పత్రాల అప్‌లోడ్',
-        summary: 'దరఖాస్తు సారాంశం',
-        fullName: 'ఆధార్ ప్రకారం పూర్తి పేరు',
-        email: 'ఇమెయిల్ చిరునామా',
-        phone: 'మొబైల్ నంబర్',
-        address: 'నివాస చిరునామా',
-        dateOfBirth: 'పుట్టిన తేది',
-        occupation: 'ప్రస్తుత వృత్తి',
-        income: 'వార్షిక ఆదాయం',
-        upload: 'పత్రం అప్‌లోడ్',
-        uploading: 'పత్రం అప్‌లోడ్ చేస్తోంది...',
-        invalidFile: 'చెల్లని ఫైల్ ఫార్మాట్. దయచేసి PDF, JPG, లేదా PNG ఫైల్స్ మాత్రమే అప్‌లోడ్ చేయండి.',
-        loginRequired: 'ఈ పథకానికి దరఖాస్తు చేయడానికి దయచేసి మీ ఖాతాలోకి సైన్ ఇన్ చేయండి.',
-        submitting: 'మీ దరఖాస్తును సమర్పిస్తోంది...',
-        submitted: 'దరఖాస్తు విజయవంతంగా సమర్పించబడింది! మీకు ఇమెయిల్ మరియు SMS ద్వారా అప్‌డేట్‌లు వస్తాయి.',
-        submitError: 'దరఖాస్తు సమర్పించడంలో విఫలమైంది. దయచేసి మీ వివరాలను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.',
-      },
-      footer: {
-        about: 'ఈ పోర్టల్ గురించి',
-        privacy: 'గోప్యతా విధానం',
-        terms: 'సేవా నిబంధనలు',
-        help: 'సహాయం & మద్దతు',
-        copyright: '© 2024 ప్రభుత్వ పథకాల పోర్టల్. అన్ని హక్కులు రక్షించబడ్డాయి.',
-      }
-    },
-  };
+    // Footer
+    'footer.copyright': '© 2024 Government Schemes Portal. All rights reserved.',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
 
-  const t = (key: string, options: any = {}) => {
-    let translation = key
-      .split('.')
-      .reduce((obj: any, i: string) => {
-        if (obj && typeof obj === 'object' && i in obj) {
-          return obj[i];
-        } else {
-          return undefined;
-        }
-      }, translations[language]);
+    //Home Page
+    'home.title': 'Empowering Citizens with Information on Government Schemes',
+    'home.subtitle': 'Your one-stop destination to discover and access government schemes.',
+    'home.featuredSchemes': 'Featured Schemes',
+    'home.browseSchemes': 'Browse All Schemes',
+    'home.aboutUs': 'About Us',
+    'home.contactUs': 'Contact Us',
+    'home.about.title': 'About the Government Schemes Portal',
+    'home.about.content': 'The Government Schemes Portal is designed to provide citizens with easy access to information about various government schemes. Our mission is to empower citizens by making it simple to discover and understand the schemes available to them.',
+    'home.contact.title': 'Contact Us',
+    'home.contact.content': 'Have questions or need assistance? Contact us using the information below.',
+    'home.contact.email': 'Email: support@govtschemes.com',
+    'home.contact.phone': 'Phone: +91-800-123-4567',
 
-    if (translation === undefined) {
-      translation = key;
-    }
+    //Schemes Page
+    'schemes.title': 'Explore Government Schemes',
+    'schemes.subtitle': 'Discover a wide range of government schemes designed to support various aspects of life.',
+    'schemes.search': 'Search Schemes',
+    'schemes.filter': 'Filter Schemes',
+    'schemes.category': 'Category',
+    'schemes.age': 'Age Group',
+    'schemes.gender': 'Gender',
+    'schemes.occupation': 'Occupation',
+    'schemes.income': 'Income',
+    'schemes.caste': 'Caste',
+    'schemes.state': 'State',
+    'schemes.applyFilters': 'Apply Filters',
+    'schemes.resetFilters': 'Reset Filters',
+  },
+  te: {
+    // Navigation
+    'nav.title': 'ప్రభుత్వ పథకాల పోర్టల్',
+    'nav.home': 'ముఖ్యపేజీ',
+    'nav.schemes': 'పథకాలు కనుగొనండి',
+    'nav.personalizedSchemes': 'వ్యక్తిగత పథకాలు',
+    'nav.about': 'మా గురించి',
+    'nav.contact': 'సంప్రదించండి',
+    'nav.login': 'లాగిన్',
+    'nav.dashboard': 'నా డాష్‌బోర్డ్',
+    'nav.admin': 'నిర్వాహక ప్యానెల్',
+    'nav.signout': 'లాగౌట్',
+    
+    // Wizard
+    'wizard.title': 'వ్యక్తిగతీకరించిన పథకం ఫైండర్',
+    'wizard.subtitle': 'మీ కోసం రూపొందించిన పథకాలను కనుగొనడానికి కొన్ని ప్రశ్నలకు సమాధానం ఇవ్వండి.',
+    'wizard.gender.title': 'మీ లింగాన్ని ఎంచుకోండి',
+    'wizard.gender.subtitle': 'ఇది మీ లింగానికి ప్రత్యేకంగా పథకాలను కనుగొనడానికి మాకు సహాయపడుతుంది.',
+    'wizard.gender.male': 'పురుషుడు',
+    'wizard.gender.female': 'స్త్రీ',
+    'wizard.gender.other': 'ఇతర',
+    'wizard.age.title': 'మీ వయస్సు సమూహాన్ని ఎంచుకోండి',
+    'wizard.age.subtitle': 'ఇది మీ వయస్సుకు సంబంధించిన పథకాలను కనుగొనడానికి మాకు సహాయపడుతుంది.',
+    'wizard.age.under18': '18 ఏళ్లలోపు',
+    'wizard.age.young': '18-35',
+    'wizard.age.middle': '36-60',
+    'wizard.age.senior': '60 పైన',
+    'wizard.occupation.title': 'మీ వృత్తిని ఎంచుకోండి',
+    'wizard.occupation.subtitle': 'ఇది మీ ఉద్యోగ స్థితి ఆధారంగా పథకాలను కనుగొనడానికి మాకు సహాయపడుతుంది.',
+    'wizard.occupation.farmer': 'రైతు',
+    'wizard.occupation.student': 'విద్యార్థి',
+    'wizard.occupation.employed': 'ఉద్యోగం',
+    'wizard.occupation.selfEmployed': 'స్వయం ఉపాధి',
+    'wizard.occupation.unemployed': 'నిరుద్యోగి',
+    'wizard.occupation.healthcare': 'హెల్త్‌కేర్ ప్రొఫెషనల్',
+    'wizard.income.title': 'మీ ఆదాయ సమూహాన్ని ఎంచుకోండి',
+    'wizard.income.subtitle': 'ఇది మీ ఆదాయ స్థాయి ఆధారంగా పథకాలను కనుగొనడానికి మాకు సహాయపడుతుంది.',
+    'wizard.income.below2lakh': '2 లక్షల దిగువన',
+    'wizard.income.between2and5lakh': '2-5 లక్షలు',
+    'wizard.income.between5and10lakh': '5-10 లక్షలు',
+    'wizard.income.above10lakh': '10 లక్షల పైన',
+    'wizard.caste.title': 'మీ కుల వర్గాన్ని ఎంచుకోండి',
+    'wizard.caste.subtitle': 'ఇది మీ కులానికి సంబంధించిన పథకాలను కనుగొనడానికి మాకు సహాయపడుతుంది.',
+    'wizard.caste.general': 'జనరల్',
+    'wizard.caste.obc': 'ఓబీసీ',
+    'wizard.caste.sc': 'ఎస్సీ',
+    'wizard.caste.st': 'ఎస్టీ',
+    'wizard.state.title': 'మీ రాష్ట్రాన్ని ఎంచుకోండి',
+    'wizard.state.subtitle': 'ఇది మీ రాష్ట్రంలో అందుబాటులో ఉన్న పథకాలను కనుగొనడానికి మాకు సహాయపడుతుంది.',
+    'wizard.findSchemes': 'పథకాలను కనుగొనండి',
 
-    if (typeof translation === 'string') {
-      Object.keys(options).forEach(optionKey => {
-        translation = translation.replace(`{{${optionKey}}}`, options[optionKey]);
-      });
-    }
+    // Common
+    'common.next': 'తరువాత',
+    'common.back': 'వెనుకకు',
 
-    return translation || key;
+    // Scheme Cards
+    'scheme.eligibility': 'అర్హత',
+    'scheme.benefits': 'ప్రయోజనాలు',
+    'scheme.applyNow': 'ఇప్పుడే దరఖాస్తు చేయండి',
+    'scheme.viewDetails': 'వివరాలు చూడండి',
+
+    // Footer
+    'footer.copyright': '© 2024 ప్రభుత్వ పథకాల పోర్టల్. అన్ని హక్కులు ప్రత్యేకించబడ్డాయి.',
+    'footer.privacy': 'గోప్యతా విధానం',
+    'footer.terms': 'సేవల నిబంధనలు',
+
+    //Home Page
+    'home.title': 'ప్రభుత్వ పథకాల సమాచారంతో పౌరులకు సాధికారత కల్పించడం',
+    'home.subtitle': 'ప్రభుత్వ పథకాలను కనుగొనడానికి మరియు యాక్సెస్ చేయడానికి మీ వన్-స్టాప్ గమ్యం.',
+    'home.featuredSchemes': 'ఫీచర్ చేసిన పథకాలు',
+    'home.browseSchemes': 'అన్ని పథకాలను బ్రౌజ్ చేయండి',
+    'home.aboutUs': 'మా గురించి',
+    'home.contactUs': 'సంప్రదించండి',
+    'home.about.title': 'ప్రభుత్వ పథకాల పోర్టల్ గురించి',
+    'home.about.content': 'ప్రభుత్వ పథకాల గురించి పౌరులకు సులభంగా సమాచారం అందించడానికి ప్రభుత్వ పథకాల పోర్టల్ రూపొందించబడింది. పౌరులకు అందుబాటులో ఉన్న పథకాలను కనుగొనడం మరియు అర్థం చేసుకోవడం సులభతరం చేయడం ద్వారా వారిని శక్తివంతం చేయడమే మా లక్ష్యం.',
+    'home.contact.title': 'మమ్మల్ని సంప్రదించండి',
+    'home.contact.content': 'ప్రశ్నలు ఉన్నాయా లేదా సహాయం కావాలా? దిగువ సమాచారాన్ని ఉపయోగించి మమ్మల్ని సంప్రదించండి.',
+    'home.contact.email': 'ఇమెయిల్: support@govtschemes.com',
+    'home.contact.phone': 'ఫోన్: +91-800-123-4567',
+
+    //Schemes Page
+    'schemes.title': 'ప్రభుత్వ పథకాలను అన్వేషించండి',
+    'schemes.subtitle': 'జీవితంలోని వివిధ అంశాలకు మద్దతు ఇవ్వడానికి రూపొందించిన అనేక ప్రభుత్వ పథకాలను కనుగొనండి.',
+    'schemes.search': 'పథకాలను శోధించండి',
+    'schemes.filter': 'పథకాలను ఫిల్టర్ చేయండి',
+    'schemes.category': 'వర్గం',
+    'schemes.age': 'వయస్సు గుంపు',
+    'schemes.gender': 'లింగం',
+    'schemes.occupation': 'వృత్తి',
+    'schemes.income': 'ఆదాయం',
+    'schemes.caste': 'కులం',
+    'schemes.state': 'రాష్ట్రం',
+    'schemes.applyFilters': 'ఫిల్టర్‌లను వర్తించండి',
+    'schemes.resetFilters': 'ఫిల్టర్‌లను రీసెట్ చేయండి',
+  }
+};
+
+const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+
+export const useTranslation = () => {
+  const context = useContext(TranslationContext);
+  if (!context) {
+    throw new Error('useTranslation must be used within a TranslationProvider');
+  }
+  return context;
+};
+
+export const TranslationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [language, setLanguage] = useState<Language>('en');
+
+  const t = (key: string): string => {
+    return translations[language][key as keyof typeof translations['en']] || key;
   };
 
   return (

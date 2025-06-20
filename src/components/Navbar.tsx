@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Globe, Menu, X, User, Settings, LogOut, Home, Search, Info, Phone, Bell } from 'lucide-react';
+import { Globe, Menu, X, User, Settings, LogOut, Home, Search, Info, Phone, Bell, UserCog } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -28,6 +27,7 @@ const Navbar = () => {
   const navItems = [
     { key: 'nav.home', href: '/', icon: Home },
     { key: 'nav.schemes', href: '/schemes', icon: Search },
+    { key: 'nav.personalizedSchemes', href: '/personalized-finder', icon: UserCog },
     { key: 'nav.about', href: '/#about', icon: Info },
     { key: 'nav.contact', href: '/#contact', icon: Phone },
   ];
