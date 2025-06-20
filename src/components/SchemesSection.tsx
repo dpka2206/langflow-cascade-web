@@ -15,7 +15,7 @@ const SchemesSection = () => {
       eligibilityKey: 'scheme.pmkisan.eligibility',
       benefitKey: 'scheme.pmkisan.benefit',
       category: 'Agriculture',
-      bgColor: 'bg-green-50'
+      bgColor: 'bg-purple-50'
     },
     {
       id: 'pmjay',
@@ -24,7 +24,7 @@ const SchemesSection = () => {
       eligibilityKey: 'scheme.pmjay.eligibility',
       benefitKey: 'scheme.pmjay.benefit',
       category: 'Healthcare',
-      bgColor: 'bg-red-50'
+      bgColor: 'bg-purple-50'
     },
     {
       id: 'pmay',
@@ -33,7 +33,7 @@ const SchemesSection = () => {
       eligibilityKey: 'scheme.pmay.eligibility',
       benefitKey: 'scheme.pmay.benefit',
       category: 'Housing',
-      bgColor: 'bg-yellow-50'
+      bgColor: 'bg-purple-50'
     },
     {
       id: 'mudra',
@@ -53,7 +53,7 @@ const SchemesSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             {t('home.featuredSchemes')}
           </h2>
-          <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
+          <div className="w-24 h-1 bg-purple-600 mx-auto mb-8"></div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
@@ -63,7 +63,7 @@ const SchemesSection = () => {
         </div>
 
         <div className="text-center">
-          <Button size="lg" variant="outline" className="px-8 py-3 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
+          <Button size="lg" variant="outline" className="px-8 py-3 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white">
             {t('schemes.viewAll')}
           </Button>
         </div>

@@ -152,18 +152,18 @@ const SchemeFinderResults: React.FC<SchemeFinderResultsProps> = ({
               </p>
               
               {scheme.translations?.benefits && scheme.translations.benefits.length > 0 && (
-                <div className="flex items-start gap-2 p-3 bg-green-50 rounded-lg border border-green-100">
-                  <Gift className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
-                  <span className="text-sm font-medium text-green-700 line-clamp-2">
+                <div className="flex items-start gap-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                  <Gift className="h-4 w-4 text-purple-600 mt-0.5 shrink-0" />
+                  <span className="text-sm font-medium text-purple-700 line-clamp-2">
                     {scheme.translations.benefits[0]}
                   </span>
                 </div>
               )}
               
               {scheme.translations?.eligibility && scheme.translations.eligibility.length > 0 && (
-                <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                  <UserCheck className="h-4 w-4 text-blue-600 mt-0.5 shrink-0" />
-                  <span className="text-sm text-blue-700 line-clamp-2">
+                <div className="flex items-start gap-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                  <UserCheck className="h-4 w-4 text-purple-600 mt-0.5 shrink-0" />
+                  <span className="text-sm text-purple-700 line-clamp-2">
                     {scheme.translations.eligibility[0]}
                   </span>
                 </div>

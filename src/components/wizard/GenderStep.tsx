@@ -36,8 +36,8 @@ const GenderStep: React.FC<GenderStepProps> = ({ value, onChange }) => {
             className={`
               h-20 p-6 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg
               ${value === option.id 
-                ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
-                : 'border-2 hover:border-purple-300 hover:bg-purple-50'
+                ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg' 
+                : 'border-2 border-purple-200 hover:border-purple-300 hover:bg-purple-50 text-purple-700'
               }
             `}
           >

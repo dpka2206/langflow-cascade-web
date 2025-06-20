@@ -41,8 +41,8 @@ const StateStep: React.FC<StateStepProps> = ({ value, onChange }) => {
               className={`
                 h-16 p-4 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-md
                 ${value === state 
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg' 
-                  : 'border-2 hover:border-purple-300 hover:bg-purple-50'
+                  ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg' 
+                  : 'border-2 border-purple-200 hover:border-purple-300 hover:bg-purple-50 text-purple-700'
                 }
               `}
             >

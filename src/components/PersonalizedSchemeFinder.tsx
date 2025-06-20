@@ -254,8 +254,8 @@ const PersonalizedSchemeFinder = () => {
             </div>
           )}
           {user && Object.values(data).some(value => value !== '') && (
-            <div className="mt-4 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg mx-2 sm:mx-0">
-              <p className="text-sm sm:text-base text-green-800">
+            <div className="mt-4 p-3 sm:p-4 bg-purple-50 border border-purple-200 rounded-lg mx-2 sm:mx-0">
+              <p className="text-sm sm:text-base text-purple-800">
                 We found your saved preferences! You can update them below or proceed directly to get recommendations.
               </p>
             </div>
@@ -277,7 +277,7 @@ const PersonalizedSchemeFinder = () => {
                 onClick={handleBack}
                 variant="outline"
                 disabled={currentStep === 1}
-                className="order-2 sm:order-1 w-full sm:w-auto px-4 sm:px-6 py-3 rounded-xl border-2 hover:bg-gray-50 transition-all duration-300"
+                className="order-2 sm:order-1 w-full sm:w-auto px-4 sm:px-6 py-3 rounded-xl border-2 border-purple-200 hover:border-purple-300 hover:bg-purple-50 text-purple-700 transition-all duration-300"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {t('common.back')}
@@ -286,7 +286,7 @@ const PersonalizedSchemeFinder = () => {
               <Button
                 onClick={handleNext}
                 disabled={!isStepValid() || loading}
-                className="order-1 sm:order-2 w-full sm:w-auto px-6 sm:px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="order-1 sm:order-2 w-full sm:w-auto px-6 sm:px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 {loading ? (
                   <>
