@@ -39,14 +39,14 @@ const SchemeFinderPage = () => {
   const [filteredSchemes, setFilteredSchemes] = useState<Scheme[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
-    age: '',
-    caste: '',
-    occupation: '',
-    gender: '',
-    incomeRange: '',
-    state: '',
-    district: '',
-    category: '',
+    age: 'all',
+    caste: 'all',
+    occupation: 'all',
+    gender: 'all',
+    incomeRange: 'all',
+    state: 'all',
+    district: 'all',
+    category: 'all',
     searchQuery: ''
   });
 
@@ -111,7 +111,7 @@ const SchemeFinderPage = () => {
     }
 
     // Apply category filter
-    if (filters.category) {
+    if (filters.category && filters.category !== 'all') {
       filtered = filtered.filter(scheme => scheme.category === filters.category);
     }
 

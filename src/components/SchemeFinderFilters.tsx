@@ -21,14 +21,14 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
 
   const clearFilters = () => {
     onFilterChange({
-      age: '',
-      caste: '',
-      occupation: '',
-      gender: '',
-      incomeRange: '',
-      state: '',
-      district: '',
-      category: '',
+      age: 'all',
+      caste: 'all',
+      occupation: 'all',
+      gender: 'all',
+      incomeRange: 'all',
+      state: 'all',
+      district: 'all',
+      category: 'all',
       searchQuery: ''
     });
   };
@@ -72,7 +72,7 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
                 <SelectValue placeholder={t('schemeFinder.selectCategory')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('schemeFinder.allCategories')}</SelectItem>
+                <SelectItem value="all">{t('schemeFinder.allCategories')}</SelectItem>
                 <SelectItem value="agriculture">{t('category.agriculture')}</SelectItem>
                 <SelectItem value="health">{t('category.health')}</SelectItem>
                 <SelectItem value="education">{t('category.education')}</SelectItem>
@@ -93,7 +93,7 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
                 <SelectValue placeholder={t('schemeFinder.selectAge')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('schemeFinder.allAges')}</SelectItem>
+                <SelectItem value="all">{t('schemeFinder.allAges')}</SelectItem>
                 <SelectItem value="0-18">0-18 {t('schemeFinder.years')}</SelectItem>
                 <SelectItem value="18-35">18-35 {t('schemeFinder.years')}</SelectItem>
                 <SelectItem value="35-60">35-60 {t('schemeFinder.years')}</SelectItem>
@@ -112,7 +112,7 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
                 <SelectValue placeholder={t('schemeFinder.selectGender')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('schemeFinder.allGenders')}</SelectItem>
+                <SelectItem value="all">{t('schemeFinder.allGenders')}</SelectItem>
                 <SelectItem value="male">{t('schemeFinder.male')}</SelectItem>
                 <SelectItem value="female">{t('schemeFinder.female')}</SelectItem>
                 <SelectItem value="other">{t('schemeFinder.other')}</SelectItem>
@@ -130,7 +130,7 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
                 <SelectValue placeholder={t('schemeFinder.selectIncome')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('schemeFinder.allIncomes')}</SelectItem>
+                <SelectItem value="all">{t('schemeFinder.allIncomes')}</SelectItem>
                 <SelectItem value="0-50000">₹0 - ₹50,000</SelectItem>
                 <SelectItem value="50000-100000">₹50,000 - ₹1,00,000</SelectItem>
                 <SelectItem value="100000-300000">₹1,00,000 - ₹3,00,000</SelectItem>
@@ -149,7 +149,7 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
                 <SelectValue placeholder={t('schemeFinder.selectCaste')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('schemeFinder.allCastes')}</SelectItem>
+                <SelectItem value="all">{t('schemeFinder.allCastes')}</SelectItem>
                 <SelectItem value="general">{t('schemeFinder.general')}</SelectItem>
                 <SelectItem value="sc">{t('schemeFinder.sc')}</SelectItem>
                 <SelectItem value="st">{t('schemeFinder.st')}</SelectItem>
@@ -168,7 +168,7 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
                 <SelectValue placeholder={t('schemeFinder.selectState')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">{t('schemeFinder.allStates')}</SelectItem>
+                <SelectItem value="all">{t('schemeFinder.allStates')}</SelectItem>
                 <SelectItem value="telangana">{t('schemeFinder.telangana')}</SelectItem>
                 <SelectItem value="andhra-pradesh">{t('schemeFinder.andhraPradesh')}</SelectItem>
                 <SelectItem value="karnataka">{t('schemeFinder.karnataka')}</SelectItem>
