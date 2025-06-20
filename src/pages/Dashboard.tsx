@@ -5,13 +5,22 @@ import { useTranslation } from '@/contexts/TranslationContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
-import { Bell } from 'lucide-react';
+import { Bell, FileText, Search, User, Clock } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import SchemeApplicationStatus from '@/components/SchemeApplicationStatus';
+import { useSchemeApplications } from '@/hooks/useSchemeApplications';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { applications, loading } = useSchemeApplications();
+
+  const activeApplications = applications.filter(app => 
+    app.status === 'submitted' || app.status === 'under_review'
+  );
+
+  const approvedApplications = applications.filter(app => app.status === 'approved');
 
   return (
     <div className="min-h-screen bg-background">
@@ -20,67 +29,144 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {t('dashboard.welcome')}
+            Welcome to MySchemes
           </h1>
           <p className="text-gray-600">
-            {t('dashboard.subtitle')}
+            Track your applications and discover new government schemes
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
-            <CardHeader>
-              <CardTitle>{t('dashboard.mySchemes')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">{t('dashboard.schemesDescription')}</p>
-              <Button className="mt-4 w-full">
-                {t('dashboard.viewSchemes')}
-              </Button>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <FileText className="h-8 w-8 text-blue-600" />
+                <div className="ml-4">
+                  <p className="text-2xl font-bold text-gray-900">{applications.length}</p>
+                  <p className="text-gray-600">Total Applications</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>{t('dashboard.applications')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">{t('dashboard.applicationsDescription')}</p>
-              <Button className="mt-4 w-full">
-                {t('dashboard.viewApplications')}
-              </Button>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <Clock className="h-8 w-8 text-yellow-600" />
+                <div className="ml-4">
+                  <p className="text-2xl font-bold text-gray-900">{activeApplications.length}</p>
+                  <p className="text-gray-600">Applications Pending</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>{t('dashboard.profile')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">{t('dashboard.profileDescription')}</p>
-              <Button className="mt-4 w-full">
-                {t('dashboard.editProfile')}
-              </Button>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 font-bold">✓</span>
+                </div>
+                <div className="ml-4">
+                  <p className="text-2xl font-bold text-gray-900">{approvedApplications.length}</p>
+                  <p className="text-gray-600">Approved</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="h-5 w-5" />
-                Notifications
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Configure how you receive scheme alerts and updates</p>
-              <Button 
-                className="mt-4 w-full" 
-                onClick={() => navigate('/notifications')}
-              >
-                Manage Notifications
-              </Button>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <Search className="h-8 w-8 text-purple-600" />
+                <div className="ml-4">
+                  <p className="text-2xl font-bold text-gray-900">500+</p>
+                  <p className="text-gray-600">Available Schemes</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Application Status Section */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  My Applications
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SchemeApplicationStatus 
+                  applications={applications} 
+                  loading={loading}
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => navigate('/schemes')}
+                >
+                  <Search className="h-4 w-4 mr-2" />
+                  Browse All Schemes
+                </Button>
+                
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => navigate('/personalized-finder')}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Get Personalized Recommendations
+                </Button>
+                
+                <Button 
+                  className="w-full justify-start" 
+                  variant="outline"
+                  onClick={() => navigate('/notifications')}
+                >
+                  <Bell className="h-4 w-4 mr-2" />
+                  Notification Settings
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Need Help?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 text-sm mb-4">
+                  Our AI assistant can help you find the right schemes and answer your questions.
+                </p>
+                <Button 
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  onClick={() => {
+                    // Trigger chatbot if available
+                    const chatbot = document.querySelector('[data-chatbot-trigger]');
+                    if (chatbot) {
+                      (chatbot as HTMLElement).click();
+                    }
+                  }}
+                >
+                  Chat with AI Assistant
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
