@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,80 +16,73 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 262 83% 58%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 270 3% 96%;
+    --secondary-foreground: 262 83% 15%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 270 3% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 270 3% 96%;
+    --accent-foreground: 262 83% 15%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 270 6% 90%;
+    --input: 270 6% 90%;
+    --ring: 262 83% 58%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 270 3% 98%;
+    --sidebar-foreground: 262 83% 15%;
+    --sidebar-primary: 262 83% 58%;
+    --sidebar-primary-foreground: 270 3% 98%;
+    --sidebar-accent: 270 3% 95%;
+    --sidebar-accent-foreground: 262 83% 15%;
+    --sidebar-border: 270 6% 85%;
+    --sidebar-ring: 262 83% 58%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 262 83% 4%;
+    --foreground: 270 3% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 262 83% 4%;
+    --card-foreground: 270 3% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 262 83% 4%;
+    --popover-foreground: 270 3% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 262 83% 70%;
+    --primary-foreground: 262 83% 4%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 262 40% 15%;
+    --secondary-foreground: 270 3% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 262 40% 15%;
+    --muted-foreground: 270 6% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 262 40% 15%;
+    --accent-foreground: 270 3% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 270 3% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 262 40% 15%;
+    --input: 262 40% 15%;
+    --ring: 262 83% 70%;
+    --sidebar-background: 262 83% 4%;
+    --sidebar-foreground: 270 3% 95%;
+    --sidebar-primary: 262 83% 70%;
+    --sidebar-primary-foreground: 262 83% 4%;
+    --sidebar-accent: 262 40% 12%;
+    --sidebar-accent-foreground: 270 3% 95%;
+    --sidebar-border: 262 40% 12%;
+    --sidebar-ring: 262 83% 70%;
   }
 }
 
@@ -99,5 +93,38 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Textured squares pattern */
+@layer utilities {
+  .textured-squares {
+    background-image: 
+      linear-gradient(45deg, rgba(147, 51, 234, 0.05) 25%, transparent 25%), 
+      linear-gradient(-45deg, rgba(147, 51, 234, 0.05) 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, rgba(147, 51, 234, 0.05) 75%), 
+      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234, 0.05) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-delay {
+    animation: fadeIn 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

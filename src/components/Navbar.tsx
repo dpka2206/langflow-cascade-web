@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Globe, Menu, X, User, Settings, LogOut, Home } from 'lucide-react';
+import { Globe, Menu, X, User, Settings, LogOut, Home, Search, Info, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -27,9 +27,9 @@ const Navbar = () => {
 
   const navItems = [
     { key: 'nav.home', href: '/', icon: Home },
-    { key: 'nav.schemes', href: '/schemes', icon: Settings },
-    { key: 'nav.about', href: '/#about', icon: User },
-    { key: 'nav.contact', href: '/#contact', icon: LogOut },
+    { key: 'nav.schemes', href: '/schemes', icon: Search },
+    { key: 'nav.about', href: '/#about', icon: Info },
+    { key: 'nav.contact', href: '/#contact', icon: Phone },
   ];
 
   const handleNavClick = (href: string) => {
@@ -56,19 +56,19 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white shadow-2xl sticky top-0 z-50 backdrop-blur-sm">
+    <nav className="bg-gradient-to-r from-purple-900 via-purple-800 to-violet-900 text-white shadow-2xl sticky top-0 z-50 backdrop-blur-sm border-b border-purple-700/50">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Enhanced Logo */}
           <div className="flex-shrink-0">
             <Link 
               to="/" 
-              className="text-2xl font-bold text-white hover:text-blue-200 transition-all duration-300 hover:scale-105 flex items-center space-x-2"
+              className="text-2xl font-bold text-white hover:text-purple-200 transition-all duration-300 hover:scale-105 flex items-center space-x-3"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">S</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-white to-purple-200 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-purple-700 font-bold text-lg">S</span>
               </div>
-              <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent font-bold">
                 {t('nav.title')}
               </span>
             </Link>
@@ -81,11 +81,11 @@ const Navbar = () => {
                 <button
                   key={item.key}
                   onClick={() => handleNavClick(item.href)}
-                  className="group relative px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800/50 transition-all duration-300 cursor-pointer flex items-center space-x-2 hover:scale-105"
+                  className="group relative px-5 py-3 rounded-xl text-sm font-semibold hover:bg-white/10 transition-all duration-300 cursor-pointer flex items-center space-x-2 hover:scale-105 backdrop-blur-sm"
                 >
                   <item.icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
                   <span>{t(item.key)}</span>
-                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-400 group-hover:w-full transition-all duration-300"></div>
+                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300 rounded-full"></div>
                 </button>
               ))}
             </div>
@@ -101,26 +101,26 @@ const Navbar = () => {
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="text-white hover:bg-blue-800/50 transition-all duration-300 hover:scale-105 flex items-center space-x-2"
+                      className="text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 flex items-center space-x-2 backdrop-blur-sm"
                     >
                       <User className="h-4 w-4" />
-                      <span className="hidden sm:inline">Account</span>
+                      <span className="hidden sm:inline font-semibold">Account</span>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-white/95 backdrop-blur-sm border shadow-xl">
+                  <DropdownMenuContent className="bg-white/95 backdrop-blur-sm border border-purple-200 shadow-xl rounded-xl">
                     {userRole === 'admin' ? (
-                      <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
+                      <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer hover:bg-purple-50">
                         <Settings className="h-4 w-4 mr-2" />
-                        {t('admin.title')}
+                        {t('nav.admin')}
                       </DropdownMenuItem>
                     ) : (
-                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer">
+                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer hover:bg-purple-50">
                         <User className="h-4 w-4 mr-2" />
                         {t('nav.dashboard')}
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 hover:bg-red-50">
                       <LogOut className="h-4 w-4 mr-2" />
                       {t('nav.signout')}
                     </DropdownMenuItem>
@@ -132,7 +132,7 @@ const Navbar = () => {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="bg-transparent border-white/50 text-white hover:bg-white hover:text-blue-900 transition-all duration-300 hover:scale-105"
+                  className="bg-transparent border-white/50 text-white hover:bg-white hover:text-purple-900 transition-all duration-300 hover:scale-105 font-semibold"
                 >
                   <User className="h-4 w-4 mr-2" />
                   {t('nav.login')}
@@ -146,7 +146,7 @@ const Navbar = () => {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="bg-transparent border-white/50 text-white hover:bg-white hover:text-blue-900 transition-all duration-300 hover:scale-105"
+                  className="bg-transparent border-white/50 text-white hover:bg-white hover:text-purple-900 transition-all duration-300 hover:scale-105 font-semibold"
                 >
                   <Globe className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">
@@ -154,16 +154,16 @@ const Navbar = () => {
                   </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white/95 backdrop-blur-sm border shadow-xl">
+              <DropdownMenuContent className="bg-white/95 backdrop-blur-sm border border-purple-200 shadow-xl rounded-xl">
                 <DropdownMenuItem 
                   onClick={() => setLanguage('en')}
-                  className={`cursor-pointer ${language === 'en' ? 'bg-blue-50 font-semibold' : ''}`}
+                  className={`cursor-pointer hover:bg-purple-50 ${language === 'en' ? 'bg-purple-50 font-semibold' : ''}`}
                 >
                   🇺🇸 English
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => setLanguage('te')}
-                  className={`cursor-pointer ${language === 'te' ? 'bg-blue-50 font-semibold' : ''}`}
+                  className={`cursor-pointer hover:bg-purple-50 ${language === 'te' ? 'bg-purple-50 font-semibold' : ''}`}
                 >
                   🇮🇳 తెలుగు
                 </DropdownMenuItem>
@@ -176,7 +176,7 @@ const Navbar = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white hover:bg-blue-800/50 transition-all duration-300"
+                className="text-white hover:bg-white/10 transition-all duration-300"
               >
                 {isMobileMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -191,12 +191,12 @@ const Navbar = () => {
         {/* Enhanced Mobile Navigation */}
         {isMobileMenuOpen && (
           <div className="md:hidden animate-fade-in">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-blue-800/50 backdrop-blur-sm">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-purple-700/50 backdrop-blur-sm">
               {navItems.map((item) => (
                 <button
                   key={item.key}
                   onClick={() => handleNavClick(item.href)}
-                  className="group w-full text-left px-3 py-3 rounded-lg text-base font-medium hover:bg-blue-800/50 transition-all duration-300 flex items-center space-x-3"
+                  className="group w-full text-left px-4 py-3 rounded-xl text-base font-semibold hover:bg-white/10 transition-all duration-300 flex items-center space-x-3"
                 >
                   <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                   <span>{t(item.key)}</span>
@@ -205,7 +205,7 @@ const Navbar = () => {
               {!user && (
                 <Link
                   to="/auth"
-                  className="group w-full text-left px-3 py-3 rounded-lg text-base font-medium hover:bg-blue-800/50 transition-all duration-300 flex items-center space-x-3"
+                  className="group w-full text-left px-4 py-3 rounded-xl text-base font-semibold hover:bg-white/10 transition-all duration-300 flex items-center space-x-3"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <User className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
