@@ -1,7 +1,5 @@
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import React from 'react';
 import NavbarLogo from './navbar/NavbarLogo';
 import DesktopNavigation from './navbar/DesktopNavigation';
 import MobileNavigation from './navbar/MobileNavigation';
@@ -9,8 +7,6 @@ import UserActions from './navbar/UserActions';
 import LanguageSwitcher from './navbar/LanguageSwitcher';
 
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   return (
     <nav className="bg-gradient-to-r from-purple-900 via-purple-800 to-violet-900 text-white shadow-2xl sticky top-0 z-50 backdrop-blur-sm border-b border-purple-700/50">
       <div className="w-full px-3 sm:px-4 lg:px-8">
@@ -22,29 +18,9 @@ const Navbar = () => {
           <div className="flex items-center space-x-2 sm:space-x-3">
             <UserActions />
             <LanguageSwitcher />
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white hover:bg-white/10 transition-all duration-300 p-2"
-              >
-                {isMobileMenuOpen ? (
-                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
-                ) : (
-                  <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
-                )}
-              </Button>
-            </div>
+            <MobileNavigation />
           </div>
         </div>
-
-        <MobileNavigation 
-          isOpen={isMobileMenuOpen} 
-          onClose={() => setIsMobileMenuOpen(false)} 
-        />
       </div>
     </nav>
   );
