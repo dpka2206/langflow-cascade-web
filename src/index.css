@@ -98,33 +98,53 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   }
 }
 
-/* Enhanced animations and effects */
+/* Enhanced textured squares pattern */
 @layer utilities {
+  .textured-squares {
+    background-image: 
+      linear-gradient(45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
+      linear-gradient(-45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, rgba(147, 51, 234, 0.08) 75%), 
+      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234,0.08) 75%);
+    background-size: 30px 30px;
+    background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
+  }
+
+  /* Glossy transparent card styles */
+  .glossy-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 8px 32px 0 rgba(31, 38, 135, 0.37),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .glossy-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 40px 0 rgba(31, 38, 135, 0.4),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+  }
+
   .animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
+    animation: fadeIn 0.6s ease-out forwards;
   }
 
   .animate-fade-in-delay {
-    animation: fadeIn 1s ease-out 0.4s forwards;
+    animation: fadeIn 0.8s ease-out 0.3s forwards;
     opacity: 0;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out forwards;
-  }
-
-  .animate-bounce-gentle {
-    animation: bounceGentle 2s ease-in-out infinite;
   }
 
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
@@ -132,93 +152,16 @@
     }
   }
 
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Wizard-specific gradients */
+  .from-sky-50 {
+    --tw-gradient-from: hsl(var(--sky-50));
   }
-
-  @keyframes bounceGentle {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
+  
+  .via-lavender-50 {
+    --tw-gradient-via: hsl(var(--lavender-50));
   }
-
-  /* Improved gradient utilities */
-  .gradient-text {
-    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent;
+  
+  .to-mint-50 {
+    --tw-gradient-to: hsl(var(--mint-50));
   }
-
-  .gradient-border {
-    position: relative;
-  }
-
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 2px;
-    background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
-    border-radius: inherit;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-  }
-
-  /* Enhanced card effects */
-  .card-hover {
-    @apply transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-2;
-  }
-
-  .glass-effect {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl;
-  }
-
-  /* Improved button styles */
-  .btn-gradient {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
-  }
-
-  .btn-outline-gradient {
-    @apply border-2 border-transparent bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-border hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-700;
-  }
-
-  /* Custom scrollbar */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-gray-100 rounded-full;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 rounded-full;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply from-blue-600 to-purple-700;
-  }
-}
-
-/* Typography improvements */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-h1, h2, h3, h4, h5, h6 {
-  @apply font-semibold tracking-tight;
-}
-
-.text-shadow {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.text-shadow-lg {
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
