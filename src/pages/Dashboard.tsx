@@ -143,29 +143,6 @@ const Dashboard = () => {
                 </Button>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Need Help?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-4">
-                  Our AI assistant can help you find the right schemes and answer your questions.
-                </p>
-                <Button 
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  onClick={() => {
-                    // Trigger chatbot if available
-                    const chatbot = document.querySelector('[data-chatbot-trigger]');
-                    if (chatbot) {
-                      (chatbot as HTMLElement).click();
-                    }
-                  }}
-                >
-                  Chat with AI Assistant
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
