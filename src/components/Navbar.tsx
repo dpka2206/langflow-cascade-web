@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Globe, Menu, X, User, Settings, LogOut, Home, Search, Info, Phone } from 'lucide-react';
+import { Globe, Menu, X, User, Settings, LogOut, Home, Search, Info, Phone, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -93,6 +93,19 @@ const Navbar = () => {
 
           {/* Enhanced User Actions and Language Switcher */}
           <div className="flex items-center space-x-3">
+            {/* Notifications Button (only show for logged in users) */}
+            {user && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/notifications')}
+                className="text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 flex items-center space-x-2 backdrop-blur-sm"
+              >
+                <Bell className="h-4 w-4" />
+                <span className="hidden sm:inline font-semibold">Notifications</span>
+              </Button>
+            )}
+
             {/* Enhanced User Actions */}
             {user ? (
               <div className="flex items-center space-x-3">
@@ -119,6 +132,10 @@ const Navbar = () => {
                         {t('nav.dashboard')}
                       </DropdownMenuItem>
                     )}
+                    <DropdownMenuItem onClick={() => navigate('/notifications')} className="cursor-pointer hover:bg-purple-50">
+                      <Bell className="h-4 w-4 mr-2" />
+                      Notifications
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 hover:bg-red-50">
                       <LogOut className="h-4 w-4 mr-2" />
@@ -202,6 +219,18 @@ const Navbar = () => {
                   <span>{t(item.key)}</span>
                 </button>
               ))}
+              {user && (
+                <button
+                  onClick={() => {
+                    navigate('/notifications');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="group w-full text-left px-4 py-3 rounded-xl text-base font-semibold hover:bg-white/10 transition-all duration-300 flex items-center space-x-3"
+                >
+                  <Bell className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span>Notifications</span>
+                </button>
+              )}
               {!user && (
                 <Link
                   to="/auth"
