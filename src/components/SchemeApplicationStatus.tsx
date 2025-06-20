@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +6,7 @@ import { Clock, CheckCircle, XCircle, AlertCircle, FileText } from 'lucide-react
 interface SchemeApplication {
   id: string;
   scheme_name: string;
-  status: 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected';
+  status: string; // Changed from union type to string to match database
   submitted_at: string | null;
   estimated_approval_days?: number;
   application_number?: string;
@@ -51,12 +50,15 @@ const SchemeApplicationStatus: React.FC<SchemeApplicationStatusProps> = ({ appli
       'rejected': 'Rejected'
     };
 
+    const variantKey = status as keyof typeof variants;
+    const labelKey = status as keyof typeof labels;
+
     return (
       <Badge 
-        variant={variants[status as keyof typeof variants] || 'secondary'}
+        variant={variants[variantKey] || 'secondary'}
         className={status === 'approved' ? 'bg-green-100 text-green-800 hover:bg-green-200' : ''}
       >
-        {labels[status as keyof typeof labels] || status}
+        {labels[labelKey] || status}
       </Badge>
     );
   };

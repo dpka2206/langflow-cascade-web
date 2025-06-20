@@ -7,7 +7,7 @@ interface SchemeApplication {
   id: string;
   scheme_id: string;
   user_id: string;
-  status: 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected';
+  status: string; // Changed from union type to string to match database
   personal_info: any;
   uploaded_documents: any[];
   application_data: any;
@@ -84,7 +84,7 @@ export const useSchemeApplications = () => {
             scheme_name: schemeName,
             application_number: app.submitted_at ? `MS${Date.now().toString().slice(-6)}${index}` : undefined,
             estimated_approval_days: getEstimatedApprovalDays(app.status)
-          };
+          } as SchemeApplication;
         })
       );
 
