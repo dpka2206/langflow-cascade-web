@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../contexts/TranslationContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,6 +35,7 @@ const SchemeCard: React.FC<SchemeCardProps> = ({
   bgColor = 'bg-white'
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const categoryColors: Record<string, string> = {
     'Financial': 'bg-green-100 text-green-800 border-green-200',
@@ -54,6 +56,16 @@ const SchemeCard: React.FC<SchemeCardProps> = ({
   };
 
   const CategoryIcon = getCategoryIcon(category);
+
+  const handleApplyNow = () => {
+    // Navigate to schemes page with filter for this specific scheme type
+    navigate('/schemes', { state: { selectedCategory: category, searchTerm: t(titleKey) } });
+  };
+
+  const handleLearnMore = () => {
+    // Navigate to schemes page to view more details
+    navigate('/schemes', { state: { selectedCategory: category } });
+  };
 
   return (
     <Card className={`group ${bgColor} hover:shadow-2xl transition-all duration-500 border-0 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-gray-50/50 hover:scale-[1.02] hover:-translate-y-1`}>
@@ -118,13 +130,17 @@ const SchemeCard: React.FC<SchemeCardProps> = ({
       </CardContent>
       
       <CardFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 pb-4 sm:pb-6 px-4 sm:px-6">
-        <Button className="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group">
+        <Button 
+          className="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+          onClick={handleApplyNow}
+        >
           <span className="text-sm sm:text-base">{t('common.apply')}</span>
           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
         </Button>
         <Button 
           variant="outline" 
           className="w-full sm:flex-1 border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 font-semibold py-2.5 rounded-xl transition-all duration-300 hover:scale-105"
+          onClick={handleLearnMore}
         >
           <span className="text-sm sm:text-base">{t('common.learnMore')}</span>
         </Button>
