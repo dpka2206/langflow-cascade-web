@@ -1,9 +1,11 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const DesktopNavigation = () => {
   const location = useLocation();
+  const { user, userRole } = useAuth();
 
   const navItems = [
     { href: '/', label: 'Home' },
@@ -11,6 +13,11 @@ const DesktopNavigation = () => {
     { href: '/services', label: 'Services' },
     { href: '/personalized-finder', label: 'Personalized Finder' },
   ];
+
+  // Add Dashboard link for logged-in citizens
+  if (user && userRole === 'citizen') {
+    navItems.push({ href: '/dashboard', label: 'Dashboard' });
+  }
 
   return (
     <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">

@@ -4,9 +4,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const MobileNavigation = () => {
   const location = useLocation();
+  const { user, userRole } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const navItems = [
@@ -15,6 +17,11 @@ const MobileNavigation = () => {
     { href: '/services', label: 'Services' },
     { href: '/personalized-finder', label: 'Personalized Finder' },
   ];
+
+  // Add Dashboard link for logged-in citizens
+  if (user && userRole === 'citizen') {
+    navItems.push({ href: '/dashboard', label: 'Dashboard' });
+  }
 
   const handleLinkClick = () => {
     setIsOpen(false);
