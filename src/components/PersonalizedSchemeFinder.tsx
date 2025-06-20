@@ -103,7 +103,7 @@ const PersonalizedSchemeFinder = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-lavender-50 to-mint-50 p-4">
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8 pt-8">
+        <div className="text-center mb-8 pt-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">
             {t('wizard.title')}
           </h1>
