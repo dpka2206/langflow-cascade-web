@@ -183,38 +183,40 @@ const PersonalizedSchemeFinder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-lavender-50 to-mint-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-lavender-50 to-mint-50 p-2 sm:p-4">
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8 pt-4">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+        <div className="text-center mb-6 sm:mb-8 pt-2 sm:pt-4 px-2">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">
             {t('wizard.title')}
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600 px-2">
             {t('wizard.subtitle')}
           </p>
           {!user && (
-            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-yellow-800">
+            <div className="mt-4 p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-lg mx-2 sm:mx-0">
+              <p className="text-sm sm:text-base text-yellow-800">
                 Please <Link to="/auth" className="text-yellow-900 underline font-semibold">login</Link> to save your preferences and get personalized recommendations.
               </p>
             </div>
           )}
         </div>
 
-        <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
+        <div className="px-2 sm:px-0">
+          <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
+        </div>
 
-        <Card className="mt-8 border-0 shadow-2xl backdrop-blur-sm bg-white/80">
-          <CardContent className="p-8">
-            <div className="min-h-[400px] flex flex-col justify-center">
+        <Card className="mt-6 sm:mt-8 mx-2 sm:mx-0 border-0 shadow-xl sm:shadow-2xl backdrop-blur-sm bg-white/80">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
+            <div className="min-h-[300px] sm:min-h-[400px] flex flex-col justify-center">
               {renderStep()}
             </div>
 
-            <div className="flex justify-between mt-8 pt-6 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-0 mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-100">
               <Button
                 onClick={handleBack}
                 variant="outline"
                 disabled={currentStep === 1}
-                className="px-6 py-3 rounded-xl border-2 hover:bg-gray-50 transition-all duration-300"
+                className="order-2 sm:order-1 w-full sm:w-auto px-4 sm:px-6 py-3 rounded-xl border-2 hover:bg-gray-50 transition-all duration-300"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {t('common.back')}
@@ -223,7 +225,7 @@ const PersonalizedSchemeFinder = () => {
               <Button
                 onClick={handleNext}
                 disabled={!isStepValid() || loading}
-                className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="order-1 sm:order-2 w-full sm:w-auto px-6 sm:px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 {loading ? (
                   <>

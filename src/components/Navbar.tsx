@@ -13,13 +13,13 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gradient-to-r from-purple-900 via-purple-800 to-violet-900 text-white shadow-2xl sticky top-0 z-50 backdrop-blur-sm border-b border-purple-700/50">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="w-full px-3 sm:px-4 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           <NavbarLogo />
           <DesktopNavigation />
 
           {/* User Actions and Language Switcher */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <UserActions />
             <LanguageSwitcher />
 
@@ -29,12 +29,12 @@ const Navbar = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white hover:bg-white/10 transition-all duration-300"
+                className="text-white hover:bg-white/10 transition-all duration-300 p-2"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
                 ) : (
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
                 )}
               </Button>
             </div>
