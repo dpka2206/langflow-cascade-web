@@ -8,11 +8,14 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Users, 
   IndianRupee, 
-  Calendar, 
   CheckCircle, 
   ArrowRight,
   Sparkles,
-  Award
+  Award,
+  Heart,
+  Briefcase,
+  GraduationCap,
+  Home
 } from 'lucide-react';
 
 interface SchemeCardProps {
@@ -37,114 +40,135 @@ const SchemeCard: React.FC<SchemeCardProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const categoryColors: Record<string, string> = {
-    'Financial': 'bg-green-100 text-green-800 border-green-200',
-    'Education': 'bg-blue-100 text-blue-800 border-blue-200',
-    'Healthcare': 'bg-red-100 text-red-800 border-red-200',
-    'Agriculture': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    'Employment': 'bg-purple-100 text-purple-800 border-purple-200',
-    'Housing': 'bg-orange-100 text-orange-800 border-orange-200',
+  const categoryColors: Record<string, { bg: string; icon: any; gradient: string }> = {
+    'Financial': { 
+      bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', 
+      icon: IndianRupee,
+      gradient: 'from-emerald-500 to-green-500'
+    },
+    'Education': { 
+      bg: 'bg-blue-50 text-blue-700 border-blue-200', 
+      icon: GraduationCap,
+      gradient: 'from-blue-500 to-indigo-500'
+    },
+    'Healthcare': { 
+      bg: 'bg-rose-50 text-rose-700 border-rose-200', 
+      icon: Heart,
+      gradient: 'from-rose-500 to-pink-500'
+    },
+    'Agriculture': { 
+      bg: 'bg-green-50 text-green-700 border-green-200', 
+      icon: Sparkles,
+      gradient: 'from-green-500 to-emerald-500'
+    },
+    'Employment': { 
+      bg: 'bg-purple-50 text-purple-700 border-purple-200', 
+      icon: Briefcase,
+      gradient: 'from-purple-500 to-indigo-500'
+    },
+    'Housing': { 
+      bg: 'bg-orange-50 text-orange-700 border-orange-200', 
+      icon: Home,
+      gradient: 'from-orange-500 to-red-500'
+    },
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'Financial': return IndianRupee;
-      case 'Education': return Award;
-      case 'Healthcare': return CheckCircle;
-      default: return Users;
-    }
+  const categoryInfo = categoryColors[category] || { 
+    bg: 'bg-gray-50 text-gray-700 border-gray-200', 
+    icon: Award,
+    gradient: 'from-gray-500 to-slate-500'
   };
-
-  const CategoryIcon = getCategoryIcon(category);
+  const CategoryIcon = categoryInfo.icon;
 
   const handleApplyNow = () => {
-    // Navigate to schemes page with filter for this specific scheme type
     navigate('/schemes', { state: { selectedCategory: category, searchTerm: t(titleKey) } });
   };
 
   const handleLearnMore = () => {
-    // Navigate to schemes page to view more details
     navigate('/schemes', { state: { selectedCategory: category } });
   };
 
   return (
-    <Card className={`group ${bgColor} hover:shadow-2xl transition-all duration-500 border-0 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-gray-50/50 hover:scale-[1.02] hover:-translate-y-1`}>
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" 
-           style={{ padding: '2px' }}>
-        <div className="w-full h-full bg-white rounded-2xl"></div>
+    <Card className="group relative bg-white hover:shadow-2xl transition-all duration-700 border-0 rounded-3xl overflow-hidden hover:scale-[1.02] hover:-translate-y-2">
+      {/* Gradient border effect */}
+      <div className={`absolute inset-0 bg-gradient-to-r ${categoryInfo.gradient} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[2px]`}>
+        <div className="w-full h-full bg-white rounded-3xl"></div>
       </div>
       
-      <CardHeader className="relative pb-3 sm:pb-4 p-4 sm:p-6">
-        <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 opacity-5">
-          <Sparkles className="w-full h-full text-blue-500" />
-        </div>
-        
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-0 mb-3 sm:mb-4">
-          <CardTitle className="text-lg sm:text-xl font-bold text-gray-800 leading-tight group-hover:text-blue-900 transition-colors duration-300 flex-1 pr-0 sm:pr-4">
-            {t(titleKey)}
-          </CardTitle>
-          <Badge 
-            variant="secondary" 
-            className={`${categoryColors[category] || 'bg-gray-100 text-gray-800'} font-semibold px-2 sm:px-3 py-1 rounded-full border flex items-center space-x-1 shadow-sm self-start sm:self-auto shrink-0`}
-          >
-            <CategoryIcon className="h-3 w-3" />
-            <span className="text-xs sm:text-sm">{category}</span>
-          </Badge>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4 sm:space-y-6 pb-4 sm:pb-6 px-4 sm:px-6">
-        <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-          {t(descriptionKey)}
-        </p>
-        
-        <div className="space-y-3 sm:space-y-4">
-          <div className="p-3 sm:p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
-            <div className="flex items-start space-x-2 sm:space-x-3">
-              <Users className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide block mb-1">
-                  {t('common.eligibility')}
-                </span>
-                <span className="text-sm text-gray-700 font-medium break-words">
-                  {t(eligibilityKey)}
-                </span>
-              </div>
-            </div>
+      <div className="relative z-10">
+        <CardHeader className="pb-4 p-8">
+          <div className="absolute top-0 right-0 w-32 h-32 opacity-5 overflow-hidden">
+            <Sparkles className="w-full h-full text-blue-500 transform rotate-12" />
           </div>
           
-          <div className="p-3 sm:p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100">
-            <div className="flex items-start space-x-2 sm:space-x-3">
-              <IndianRupee className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <span className="text-xs font-semibold text-green-600 uppercase tracking-wide block mb-1">
-                  {t('common.benefit')}
-                </span>
-                <span className="text-sm font-bold text-green-700 break-words">
-                  {t(benefitKey)}
-                </span>
+          <div className="flex justify-between items-start gap-4 mb-4">
+            <CardTitle className="text-xl font-bold text-gray-800 leading-tight group-hover:text-blue-900 transition-colors duration-300 flex-1">
+              {t(titleKey)}
+            </CardTitle>
+            <Badge className={`${categoryInfo.bg} font-semibold px-4 py-2 rounded-full border-2 flex items-center space-x-2 shadow-lg hover:scale-105 transition-transform duration-300`}>
+              <CategoryIcon className="h-4 w-4" />
+              <span className="text-sm">{category}</span>
+            </Badge>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="space-y-6 pb-6 px-8">
+          <p className="text-gray-600 leading-relaxed text-base">
+            {t(descriptionKey)}
+          </p>
+          
+          <div className="space-y-4">
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-100 hover:border-blue-200 transition-colors duration-300">
+              <div className="flex items-start space-x-3">
+                <div className="p-2 rounded-xl bg-blue-500 text-white">
+                  <Users className="h-4 w-4" />
+                </div>
+                <div className="flex-1">
+                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wide block mb-2">
+                    {t('common.eligibility')}
+                  </span>
+                  <span className="text-sm text-gray-700 font-medium">
+                    {t(eligibilityKey)}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-100 hover:border-emerald-200 transition-colors duration-300">
+              <div className="flex items-start space-x-3">
+                <div className="p-2 rounded-xl bg-emerald-500 text-white">
+                  <IndianRupee className="h-4 w-4" />
+                </div>
+                <div className="flex-1">
+                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-wide block mb-2">
+                    {t('common.benefit')}
+                  </span>
+                  <span className="text-sm font-bold text-emerald-700">
+                    {t(benefitKey)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-      
-      <CardFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2 pb-4 sm:pb-6 px-4 sm:px-6">
-        <Button 
-          className="w-full sm:flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
-          onClick={handleApplyNow}
-        >
-          <span className="text-sm sm:text-base">{t('common.apply')}</span>
-          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-        </Button>
-        <Button 
-          variant="outline" 
-          className="w-full sm:flex-1 border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 font-semibold py-2.5 rounded-xl transition-all duration-300 hover:scale-105"
-          onClick={handleLearnMore}
-        >
-          <span className="text-sm sm:text-base">{t('common.learnMore')}</span>
-        </Button>
-      </CardFooter>
+        </CardContent>
+        
+        <CardFooter className="flex gap-4 pt-4 pb-8 px-8">
+          <Button 
+            className={`flex-1 bg-gradient-to-r ${categoryInfo.gradient} hover:shadow-xl text-white font-semibold py-3 rounded-2xl transition-all duration-300 group-hover:scale-105`}
+            onClick={handleApplyNow}
+          >
+            <span>{t('common.apply')}</span>
+            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+          </Button>
+          <Button 
+            variant="outline" 
+            className="flex-1 border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 font-semibold py-3 rounded-2xl transition-all duration-300 hover:scale-105"
+            onClick={handleLearnMore}
+          >
+            <span>{t('common.learnMore')}</span>
+          </Button>
+        </CardFooter>
+      </div>
     </Card>
   );
 };
