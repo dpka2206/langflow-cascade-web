@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Scheme } from '@/pages/SchemeFinderPage';
+import { Scheme } from '@/types/scheme';
 import PersonalInfoStep from './application-steps/PersonalInfoStep';
 import DocumentUploadStep from './application-steps/DocumentUploadStep';
 import ApplicationSummaryStep from './application-steps/ApplicationSummaryStep';

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -6,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heart, Users, DollarSign, FileText, Play, CheckCircle, ExternalLink, Send } from 'lucide-react';
-import { Scheme } from '@/pages/SchemeFinderPage';
+import { Scheme } from '@/types/scheme';
 import SchemeApplicationForm from '@/components/SchemeApplicationForm';
 
 interface SchemeDetailModalProps {

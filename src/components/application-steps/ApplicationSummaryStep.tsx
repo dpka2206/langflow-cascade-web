@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { User, FileText, CheckCircle, AlertTriangle } from 'lucide-react';
-import { Scheme } from '@/pages/SchemeFinderPage';
+import { Scheme } from '@/types/scheme';
 import { ApplicationData } from '../SchemeApplicationForm';
 
 interface ApplicationSummaryStepProps {
