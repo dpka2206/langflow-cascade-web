@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Send, Trash2, MessageCircle, X } from 'lucide-react';
 import { useChatbot } from '@/hooks/useChatbot';
+import { useTranslation } from '@/contexts/TranslationContext';
 import ChatMessage from './ChatMessage';
 import AudioRecordButton from './AudioRecordButton';
 
@@ -12,6 +13,7 @@ const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const { messages, isLoading, sendMessage, clearMessages } = useChatbot();
+  const { language, t } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -58,7 +60,9 @@ const Chatbot: React.FC = () => {
       <Card className="h-full flex flex-col shadow-2xl border-2 border-purple-100">
         <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-t-lg flex-shrink-0 p-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold">AI Assistant</CardTitle>
+            <CardTitle className="text-lg font-semibold">
+              {language === 'te' ? 'AI సహాయకుడు' : 'AI Assistant'}
+            </CardTitle>
             <div className="flex gap-2">
               <Button
                 variant="ghost"
@@ -79,7 +83,10 @@ const Chatbot: React.FC = () => {
             </div>
           </div>
           <p className="text-sm text-purple-100 mt-1">
-            Ask me about schemes, applications, and more!
+            {language === 'te' 
+              ? 'పథకాలు, దరఖాస్తులు మరియు మరిన్నింటి గురించి నన్ను అడగండి!'
+              : 'Ask me about schemes, applications, and more!'
+            }
           </p>
         </CardHeader>
         
@@ -113,7 +120,7 @@ const Chatbot: React.FC = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
+                placeholder={language === 'te' ? 'మీ సందేశాన్ని టైప్ చేయండి...' : 'Type your message...'}
                 disabled={isLoading}
                 className="flex-1 border-purple-200 focus:border-purple-400 text-sm"
               />

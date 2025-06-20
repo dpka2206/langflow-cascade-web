@@ -10,6 +10,7 @@ const corsHeaders = {
 
 interface ChatMessage {
   message: string;
+  language?: string;
   context?: string;
 }
 
@@ -19,7 +20,7 @@ serve(async (req) => {
   }
 
   try {
-    const { message, includeSchemeData = true }: ChatMessage & { includeSchemeData?: boolean } = await req.json();
+    const { message, language = 'en', includeSchemeData = true }: ChatMessage & { includeSchemeData?: boolean } = await req.json();
 
     if (!message) {
       throw new Error('Message is required');
@@ -31,7 +32,17 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    let systemContext = `You are a helpful assistant for a government scheme finder website. You help users understand:
+    let systemContext = language === 'te' 
+      ? `మీరు ప్రభుత్వ పథకాల కనుగొనే వెబ్‌సైట్ కోసం సహాయకుడు. మీరు వినియోగదారులకు ఈ విషయాలను అర్థం చేసుకోవడంలో సహాయం చేస్తారు:
+- ప్రభుత్వ పథకాలు మరియు వాటి ప్రయోజనాలు
+- వివిధ పథకాలకు అర్హత ప్రమాణాలు
+- పథకాలకు ఎలా దరఖాస్తు చేసుకోవాలి
+- అవసరమైన పత్రాలు
+- దరఖాస్తు ప్రక్రియలు
+- సాధారణ వెబ్‌సైట్ నావిగేషన్ మరియు ఫీచర్లు
+
+ఎల్లప్పుడూ సహాయకరంగా, స్నేహపూర్వకంగా ఉండండి మరియు ఖచ్చితమైన సమాచారం అందించండి. నిర్దిష్ట వివరాల గురించి మీకు ఖచ్చితంగా తెలియకపోతే, వినియోగదారుకు అధికారిక పథక డాక్యుమెంటేషన్ చూడాలని లేదా సంబంధిత అధికారులను సంప్రదించాలని సూచించండి. తెలుగులో మాత్రమే జవాబు ఇవ్వండి.`
+      : `You are a helpful assistant for a government scheme finder website. You help users understand:
 - Government schemes and their benefits
 - Eligibility criteria for various schemes
 - How to apply for schemes
@@ -39,7 +50,7 @@ serve(async (req) => {
 - Application processes
 - General website navigation and features
 
-Always be helpful, friendly, and provide accurate information. If you're unsure about specific details, suggest the user check the official scheme documentation or contact relevant authorities.`;
+Always be helpful, friendly, and provide accurate information. If you're unsure about specific details, suggest the user check the official scheme documentation or contact relevant authorities. Respond in English only.`;
 
     // Fetch scheme data for context if requested
     if (includeSchemeData) {
@@ -61,7 +72,9 @@ Always be helpful, friendly, and provide accurate information. If you're unsure 
             `${scheme.scheme_name}: ${scheme.description || 'No description'} | Benefits: ${scheme.benefits || 'Not specified'} | Eligibility: ${scheme.eligibility_criteria || 'Check official documentation'}`
           ).join('\n');
           
-          systemContext += `\n\nAvailable Government Schemes:\n${schemeInfo}`;
+          systemContext += language === 'te' 
+            ? `\n\nఅందుబాటులో ఉన్న ప్రభుత్వ పథకాలు:\n${schemeInfo}`
+            : `\n\nAvailable Government Schemes:\n${schemeInfo}`;
         }
 
         if (externalSchemes && externalSchemes.length > 0) {
@@ -69,7 +82,9 @@ Always be helpful, friendly, and provide accurate information. If you're unsure 
             `${scheme.scheme_name}: ${scheme.description || 'No description'}`
           ).join('\n');
           
-          systemContext += `\n\nAdditional Schemes:\n${externalSchemeInfo}`;
+          systemContext += language === 'te' 
+            ? `\n\nఅదనపు పథకాలు:\n${externalSchemeInfo}`
+            : `\n\nAdditional Schemes:\n${externalSchemeInfo}`;
         }
       } catch (error) {
         console.log('Could not fetch scheme data:', error);
@@ -85,7 +100,7 @@ Always be helpful, friendly, and provide accurate information. If you're unsure 
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: `${systemContext}\n\nUser Question: ${message}`
+            text: `${systemContext}\n\n${language === 'te' ? 'వినియోగదారు ప్రశ్న' : 'User Question'}: ${message}`
           }]
         }],
         generationConfig: {
@@ -104,7 +119,11 @@ Always be helpful, friendly, and provide accurate information. If you're unsure 
     }
 
     const data = await response.json();
-    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'I apologize, but I could not generate a response. Please try again.';
+    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || (
+      language === 'te' 
+        ? 'క్షమించండి, నేను ప్రతిస్పందన రూపొందించలేకపోయాను. దయచేసి మళ్ళీ ప్రయత్నించండి.'
+        : 'I apologize, but I could not generate a response. Please try again.'
+    );
 
     return new Response(JSON.stringify({
       response: aiResponse,
