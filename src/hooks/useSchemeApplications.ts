@@ -14,7 +14,7 @@ interface SchemeApplication {
   submitted_at: string | null;
   created_at: string;
   updated_at: string;
-  scheme_name?: string;
+  scheme_name: string;
   estimated_approval_days?: number;
   application_number?: string;
 }
@@ -36,14 +36,10 @@ export const useSchemeApplications = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch applications with scheme details
+      // Fetch applications first
       const { data: applicationsData, error: applicationsError } = await supabase
         .from('scheme_applications')
-        .select(`
-          *,
-          schemes(key),
-          central_government_schemes(scheme_name)
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -51,19 +47,46 @@ export const useSchemeApplications = () => {
         throw applicationsError;
       }
 
-      // Process applications to add scheme names and generate application numbers
-      const processedApplications = applicationsData?.map((app, index) => {
-        const schemeName = app.central_government_schemes?.scheme_name || 
-                          app.schemes?.key || 
-                          'Unknown Scheme';
-        
-        return {
-          ...app,
-          scheme_name: schemeName,
-          application_number: app.submitted_at ? `MS${Date.now().toString().slice(-6)}${index}` : undefined,
-          estimated_approval_days: getEstimatedApprovalDays(app.status)
-        };
-      }) || [];
+      // Process applications and add scheme names
+      const processedApplications = await Promise.all(
+        (applicationsData || []).map(async (app, index) => {
+          let schemeName = 'Unknown Scheme';
+          
+          // Try to get scheme name from different sources
+          try {
+            // First try central_government_schemes
+            const { data: centralScheme } = await supabase
+              .from('central_government_schemes')
+              .select('scheme_name')
+              .eq('id', app.scheme_id)
+              .single();
+            
+            if (centralScheme?.scheme_name) {
+              schemeName = centralScheme.scheme_name;
+            } else {
+              // Then try schemes table
+              const { data: scheme } = await supabase
+                .from('schemes')
+                .select('key')
+                .eq('id', app.scheme_id)
+                .single();
+              
+              if (scheme?.key) {
+                schemeName = scheme.key;
+              }
+            }
+          } catch (schemeError) {
+            console.warn('Could not fetch scheme name:', schemeError);
+          }
+          
+          return {
+            ...app,
+            scheme_name: schemeName,
+            application_number: app.submitted_at ? `MS${Date.now().toString().slice(-6)}${index}` : undefined,
+            estimated_approval_days: getEstimatedApprovalDays(app.status)
+          };
+        })
+      );
 
       setApplications(processedApplications);
     } catch (err) {

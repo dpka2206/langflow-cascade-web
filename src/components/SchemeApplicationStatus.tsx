@@ -8,7 +8,7 @@ interface SchemeApplication {
   id: string;
   scheme_name: string;
   status: 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected';
-  submitted_at: string;
+  submitted_at: string | null;
   estimated_approval_days?: number;
   application_number?: string;
 }
@@ -61,7 +61,7 @@ const SchemeApplicationStatus: React.FC<SchemeApplicationStatusProps> = ({ appli
     );
   };
 
-  const getEstimatedTime = (status: string, submittedAt: string, estimatedDays?: number) => {
+  const getEstimatedTime = (status: string, submittedAt: string | null, estimatedDays?: number) => {
     if (status === 'approved' || status === 'rejected') return null;
     if (!submittedAt || !estimatedDays) return 'Processing time varies';
 
