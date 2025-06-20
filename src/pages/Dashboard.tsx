@@ -4,11 +4,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { Bell } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,6 +60,24 @@ const Dashboard = () => {
               <p className="text-gray-600">{t('dashboard.profileDescription')}</p>
               <Button className="mt-4 w-full">
                 {t('dashboard.editProfile')}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="h-5 w-5" />
+                Notifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">Configure how you receive scheme alerts and updates</p>
+              <Button 
+                className="mt-4 w-full" 
+                onClick={() => navigate('/notifications')}
+              >
+                Manage Notifications
               </Button>
             </CardContent>
           </Card>
