@@ -83,7 +83,7 @@ const SchemeFinderResults: React.FC<SchemeFinderResultsProps> = ({
     <>
       <div className="mb-6">
         <p className="text-gray-600">
-          {t('schemeFinder.resultsCount', { count: schemes.length })}
+          {`${schemes.length} ${t('schemeFinder.resultsFound')}`}
         </p>
       </div>
 
