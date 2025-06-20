@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState } from 'react';
 
 interface TranslationContextType {
@@ -62,6 +61,32 @@ const translations = {
       subtitle: 'Discover popular schemes that might benefit you',
       viewAll: 'View All Schemes',
       learnMore: 'Learn More'
+    },
+    scheme: {
+      pmkisan: {
+        title: 'PM-KISAN Farmer Support Scheme',
+        description: 'Direct income support to small and marginal farmers across India providing financial assistance for agricultural activities.',
+        eligibility: 'Small and marginal farmers with cultivable land up to 2 hectares',
+        benefit: '₹6,000 per year in three installments of ₹2,000 each'
+      },
+      pmjay: {
+        title: 'Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana',
+        description: 'World\'s largest health insurance scheme providing free treatment up to ₹5 lakh per family per year.',
+        eligibility: 'Families identified through Socio-Economic Caste Census (SECC) 2011',
+        benefit: 'Free medical treatment up to ₹5 lakh per family annually'
+      },
+      pmay: {
+        title: 'Pradhan Mantri Awas Yojana - Housing for All',
+        description: 'Affordable housing scheme aimed at providing pucca houses to all eligible families by 2024.',
+        eligibility: 'Families without pucca house and meeting income criteria',
+        benefit: 'Subsidy ranging from ₹1.5 lakh to ₹2.67 lakh for house construction'
+      },
+      mudra: {
+        title: 'Pradhan Mantri MUDRA Yojana',
+        description: 'Micro-finance scheme providing loans to small businesses and entrepreneurs for business development.',
+        eligibility: 'Small business owners, entrepreneurs, and self-employed individuals',
+        benefit: 'Collateral-free loans up to ₹10 lakh for business activities'
+      }
     },
     common: {
       apply: 'Apply Now',
@@ -251,6 +276,32 @@ const translations = {
       subtitle: 'మీకు ప్రయోజనకరమైన ప్రసిద్ధ పథకాలను కనుగొనండి',
       viewAll: 'అన్ని పథకాలను చూడండి',
       learnMore: 'మరింత తెలుసుకోండి'
+    },
+    scheme: {
+      pmkisan: {
+        title: 'PM-కిసాన్ రైతు మద్దతు పథకం',
+        description: 'భారతదేశంలోని చిన్న మరియు ఉపాంత రైతులకు వ్యవసాయ కార్యకలాపాలకు ఆర్థిక సహాయం అందించే ప్రత్యక్ష ఆదాయ మద్దతు.',
+        eligibility: '2 హెక్టార్ల వరకు వ్యవసాయ భూమి ఉన్న చిన్న మరియు ఉపాంత రైతులు',
+        benefit: 'సంవత్సరానికి ₹6,000 మూడు వాయిదాలుగా ₹2,000 చొప్పున'
+      },
+      pmjay: {
+        title: 'ఆయుష్మాన్ భారత్ - ప్రధానమంత్రి జన్ ఆరోగ్య యోజన',
+        description: 'కుటుంబానికి సంవత్సరానికి ₹5 లక్షల వరకు ఉచిత చికిత్స అందించే ప్రపంచంలోనే అతిపెద్ద ఆరోగ్య బీమా పథకం.',
+        eligibility: 'సామాజిక ఆర్థిక కుల జనాభా లెక్కల 2011 ద్వారా గుర్తించబడిన కుటుంబాలు',
+        benefit: 'కుటుంబానికి సంవత్సరానికి ₹5 లక్షల వరకు ఉచిత వైద్య చికిత్స'
+      },
+      pmay: {
+        title: 'ప్రధానమంత్రి ఆవాస్ యోజన - అందరికీ గృహం',
+        description: '2024 నాటికి అన్ని అర్హ కుటుంబాలకు పక్కా గృహాలు అందించడం లక్ష్యంగా చేసుకున్న సరసమైన గృహనిర్మాణ పథకం.',
+        eligibility: 'పక్కా ఇల్లు లేని మరియు ఆదాయ ప్రమాణాలను చేరుకునే కుటుంబాలు',
+        benefit: 'ఇల్లు నిర్మాణానికి ₹1.5 లక్షల నుండి ₹2.67 లక్షల వరకు సబ్సిడీ'
+      },
+      mudra: {
+        title: 'ప్రధానమంత్రి ముద్రా యోజన',
+        description: 'వ్యాపార అభివృద్ధి కోసం చిన్న వ్యాపారాలు మరియు వ్యవస్థాపకులకు రుణాలు అందించే సూక్ష్మ ఆర్థిక పథకం.',
+        eligibility: 'చిన్న వ్యాపార యజమానులు, వ్యవస్థాపకులు మరియు స్వయం ఉపాधిపై ఆధారపడిన వ్యక్తులు',
+        benefit: 'వ్యాపార కార్యకలాపాలకు ₹10 లక్షల వరకు తాకట్టు లేని రుణాలు'
+      }
     },
     common: {
       apply: 'ఇప్పుడే దరఖాస్తు చేసుకోండి',
