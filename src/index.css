@@ -45,29 +45,6 @@
     --sidebar-accent-foreground: 262 83% 15%;
     --sidebar-border: 270 6% 85%;
     --sidebar-ring: 262 83% 58%;
-
-    /* Custom soft color palette */
-    --sky-50: 240 100% 98%;
-    --sky-100: 224 100% 96%;
-    --sky-200: 221 83% 90%;
-    --sky-300: 216 78% 82%;
-    --sky-400: 213 78% 73%;
-    --sky-500: 212 78% 64%;
-    --sky-600: 212 78% 55%;
-    
-    --lavender-50: 270 100% 98%;
-    --lavender-100: 269 100% 95%;
-    --lavender-200: 269 100% 92%;
-    --lavender-300: 269 97% 85%;
-    --lavender-400: 270 95% 75%;
-    
-    --mint-50: 151 100% 98%;
-    --mint-100: 151 84% 95%;
-    --mint-200: 151 76% 90%;
-    --mint-300: 151 75% 81%;
-    --mint-400: 151 75% 72%;
-    --mint-500: 151 75% 63%;
-    --mint-600: 151 75% 54%;
   }
 
   .dark {
@@ -119,100 +96,54 @@
   }
 }
 
-/* Enhanced utilities with soft color palette */
+/* Enhanced textured squares pattern */
 @layer utilities {
-  /* Soft color palette utilities */
-  .from-sky-50 { --tw-gradient-from: hsl(var(--sky-50)); }
-  .from-sky-100 { --tw-gradient-from: hsl(var(--sky-100)); }
-  .from-sky-200 { --tw-gradient-from: hsl(var(--sky-200)); }
-  .from-sky-300 { --tw-gradient-from: hsl(var(--sky-300)); }
-  .from-sky-400 { --tw-gradient-from: hsl(var(--sky-400)); }
-  .from-sky-500 { --tw-gradient-from: hsl(var(--sky-500)); }
-  .from-sky-600 { --tw-gradient-from: hsl(var(--sky-600)); }
-  
-  .to-sky-50 { --tw-gradient-to: hsl(var(--sky-50)); }
-  .to-sky-100 { --tw-gradient-to: hsl(var(--sky-100)); }
-  .to-sky-200 { --tw-gradient-to: hsl(var(--sky-200)); }
-  .to-sky-300 { --tw-gradient-to: hsl(var(--sky-300)); }
-  .to-sky-400 { --tw-gradient-to: hsl(var(--sky-400)); }
-  .to-sky-500 { --tw-gradient-to: hsl(var(--sky-500)); }
-  .to-sky-600 { --tw-gradient-to: hsl(var(--sky-600)); }
-  
-  .bg-sky-50 { background-color: hsl(var(--sky-50)); }
-  .bg-sky-100 { background-color: hsl(var(--sky-100)); }
-  .bg-sky-200 { background-color: hsl(var(--sky-200)); }
-  .bg-sky-300 { background-color: hsl(var(--sky-300)); }
-  .bg-sky-400 { background-color: hsl(var(--sky-400)); }
-  .bg-sky-500 { background-color: hsl(var(--sky-500)); }
-  .bg-sky-600 { background-color: hsl(var(--sky-600)); }
-  
-  .text-sky-600 { color: hsl(var(--sky-600)); }
-  
-  .from-lavender-100 { --tw-gradient-from: hsl(var(--lavender-100)); }
-  .from-lavender-400 { --tw-gradient-from: hsl(var(--lavender-400)); }
-  .to-lavender-300 { --tw-gradient-to: hsl(var(--lavender-300)); }
-  .to-violet-300 { --tw-gradient-to: hsl(269 75% 72%); }
-  .to-purple-300 { --tw-gradient-to: hsl(270 75% 72%); }
-  
-  .from-mint-50 { --tw-gradient-from: hsl(var(--mint-50)); }
-  .from-mint-100 { --tw-gradient-from: hsl(var(--mint-100)); }
-  .from-mint-400 { --tw-gradient-from: hsl(var(--mint-400)); }
-  .from-mint-500 { --tw-gradient-from: hsl(var(--mint-500)); }
-  .from-mint-600 { --tw-gradient-from: hsl(var(--mint-600)); }
-  
-  .to-mint-50 { --tw-gradient-to: hsl(var(--mint-50)); }
-  .to-mint-100 { --tw-gradient-to: hsl(var(--mint-100)); }
-  .to-mint-200 { --tw-gradient-to: hsl(var(--mint-200)); }
-  .to-mint-300 { --tw-gradient-to: hsl(var(--mint-300)); }
-  .to-mint-500 { --tw-gradient-to: hsl(var(--mint-500)); }
-  .to-mint-600 { --tw-gradient-to: hsl(var(--mint-600)); }
-  
-  .to-green-300 { --tw-gradient-to: hsl(151 75% 72%); }
-  .to-emerald-300 { --tw-gradient-to: hsl(156 75% 72%); }
-  .to-cyan-300 { --tw-gradient-to: hsl(186 75% 72%); }
-  .to-blue-300 { --tw-gradient-to: hsl(213 75% 72%); }
-
-  /* Enhanced textured squares pattern with softer opacity */
   .textured-squares {
     background-image: 
-      linear-gradient(45deg, rgba(147, 51, 234, 0.05) 25%, transparent 25%), 
-      linear-gradient(-45deg, rgba(147, 51, 234, 0.05) 25%, transparent 25%), 
-      linear-gradient(45deg, transparent 75%, rgba(147, 51, 234, 0.05) 75%), 
-      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234, 0.05) 75%);
-    background-size: 25px 25px;
-    background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+      linear-gradient(45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
+      linear-gradient(-45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, rgba(147, 51, 234, 0.08) 75%), 
+      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234, 0.08) 75%);
+    background-size: 30px 30px;
+    background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
   }
 
-  /* Refined animations with smoother transitions */
+  /* Glossy transparent card styles */
+  .glossy-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 8px 32px 0 rgba(31, 38, 135, 0.37),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .glossy-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 40px 0 rgba(31, 38, 135, 0.4),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+  }
+
   .animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
+    animation: fadeIn 0.6s ease-out forwards;
   }
 
   .animate-fade-in-delay {
-    animation: fadeIn 1s ease-out 0.4s forwards;
+    animation: fadeIn 0.8s ease-out 0.3s forwards;
     opacity: 0;
   }
 
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  /* Smooth pulse animation for floating elements */
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 0.1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.15;
-      transform: scale(1.05);
     }
   }
 }
