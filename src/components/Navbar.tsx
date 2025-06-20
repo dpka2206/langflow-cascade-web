@@ -26,10 +26,34 @@ const Navbar = () => {
 
   const navItems = [
     { key: 'nav.home', href: '/' },
-    { key: 'nav.schemes', href: '#schemes' },
-    { key: 'nav.about', href: '#about' },
-    { key: 'nav.contact', href: '#contact' },
+    { key: 'nav.schemes', href: '/schemes' },
+    { key: 'nav.about', href: '/#about' },
+    { key: 'nav.contact', href: '/#contact' },
   ];
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith('/#')) {
+      // Handle hash links by navigating to home first, then scrolling
+      const hash = href.substring(2);
+      if (window.location.pathname !== '/') {
+        navigate('/');
+        setTimeout(() => {
+          const element = document.getElementById(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      } else {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    } else {
+      navigate(href);
+    }
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <nav className="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
@@ -46,13 +70,13 @@ const Navbar = () => {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navItems.map((item) => (
-                <Link
+                <button
                   key={item.key}
-                  to={item.href}
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-800 transition-colors"
+                  onClick={() => handleNavClick(item.href)}
+                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-800 transition-colors cursor-pointer"
                 >
                   {t(item.key)}
-                </Link>
+                </button>
               ))}
             </div>
           </div>
@@ -134,14 +158,13 @@ const Navbar = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-blue-800">
               {navItems.map((item) => (
-                <Link
+                <button
                   key={item.key}
-                  to={item.href}
-                  className="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={() => handleNavClick(item.href)}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 transition-colors"
                 >
                   {t(item.key)}
-                </Link>
+                </button>
               ))}
               {!user && (
                 <Link
