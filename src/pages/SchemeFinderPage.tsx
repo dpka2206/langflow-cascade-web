@@ -59,13 +59,7 @@ const SchemeFinderPage = () => {
     <>
       <Navbar />
       {isPersonalized ? (
-        <PersonalizedView
-          centralSchemes={centralSchemes}
-          stateSchemes={stateSchemes}
-          filteredSchemes={filteredSchemes}
-          loading={loading}
-          searchQuery={filters.searchQuery}
-        />
+        <PersonalizedView />
       ) : (
         <RegularView
           centralSchemes={centralSchemes}

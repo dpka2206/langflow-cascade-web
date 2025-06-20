@@ -73,12 +73,16 @@ export const usePersonalizedSchemes = () => {
             category: scheme.category,
             status: 'active',
             created_at: new Date().toISOString(),
-            scheme_type: scheme.scheme_type as 'central' | 'state',
+            scheme_type: (scheme.scheme_type || 'external') as 'central' | 'state',
             translations: {
               title: scheme.scheme_name,
               description: scheme.description || '',
-              benefits: Array.isArray(scheme.benefits) ? scheme.benefits : [],
-              eligibility: Array.isArray(scheme.eligibility_criteria) ? scheme.eligibility_criteria : [],
+              benefits: Array.isArray(scheme.benefits) 
+                ? scheme.benefits.map(b => typeof b === 'string' ? b : String(b))
+                : [],
+              eligibility: Array.isArray(scheme.eligibility_criteria) 
+                ? scheme.eligibility_criteria.map(e => typeof e === 'string' ? e : String(e))
+                : [],
               documents: []
             }
           })),
@@ -134,8 +138,12 @@ export const usePersonalizedSchemes = () => {
         translations: {
           title: scheme.scheme_name,
           description: scheme.description || '',
-          benefits: Array.isArray(scheme.benefits) ? scheme.benefits : [],
-          eligibility: Array.isArray(scheme.eligibility_criteria) ? scheme.eligibility_criteria : [],
+          benefits: Array.isArray(scheme.benefits) 
+            ? scheme.benefits.map((b: any) => typeof b === 'string' ? b : String(b))
+            : [],
+          eligibility: Array.isArray(scheme.eligibility_criteria) 
+            ? scheme.eligibility_criteria.map((e: any) => typeof e === 'string' ? e : String(e))
+            : [],
           documents: []
         }
       }));
