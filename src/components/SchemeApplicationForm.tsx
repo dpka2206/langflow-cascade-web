@@ -90,52 +90,125 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
     }
   };
 
+  const validatePersonalInfo = () => {
+    const { personalInfo } = applicationData;
+    const required = ['fullName', 'email', 'phone', 'address', 'dateOfBirth'];
+    return required.every(field => personalInfo[field as keyof typeof personalInfo]?.trim());
+  };
+
+  const validateDocuments = () => {
+    const requiredDocs = applicationData.documents.filter(doc => doc.required);
+    return requiredDocs.every(doc => doc.status === 'uploaded');
+  };
+
   const handleSubmit = async () => {
     if (!user) {
-      toast.error(t('application.loginRequired'));
+      toast.error('Please log in to submit your application');
+      return;
+    }
+
+    // Validate all steps
+    if (!validatePersonalInfo()) {
+      toast.error('Please fill in all required personal information');
+      setCurrentStep(1);
+      return;
+    }
+
+    if (!validateDocuments()) {
+      toast.error('Please upload all required documents');
+      setCurrentStep(2);
       return;
     }
 
     setLoading(true);
+    console.log('Starting application submission for user:', user.id, 'scheme:', scheme.id);
+    
     try {
       // Upload documents first
       const uploadedDocuments = [];
+      
       for (const doc of applicationData.documents) {
         if (doc.file) {
-          const fileName = `${user.id}/${scheme.id}/${Date.now()}-${doc.file.name}`;
-          const { error: uploadError } = await supabase.storage
+          console.log('Uploading document:', doc.name);
+          const fileExt = doc.file.name.split('.').pop();
+          const fileName = `${user.id}/${scheme.id}/${Date.now()}-${doc.name.replace(/\s+/g, '_')}.${fileExt}`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
             .from('scheme-documents')
-            .upload(fileName, doc.file);
+            .upload(fileName, doc.file, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-          if (uploadError) throw uploadError;
+          if (uploadError) {
+            console.error('Document upload error:', uploadError);
+            throw new Error(`Failed to upload ${doc.name}: ${uploadError.message}`);
+          }
 
+          console.log('Document uploaded successfully:', uploadData);
+          
           uploadedDocuments.push({
             name: doc.name,
             fileName: fileName,
-            originalName: doc.file.name
+            originalName: doc.file.name,
+            fileSize: doc.file.size,
+            uploadedAt: new Date().toISOString()
           });
         }
       }
 
       // Create application record
-      const { error: applicationError } = await supabase
+      const applicationRecord = {
+        user_id: user.id,
+        scheme_id: scheme.id,
+        status: 'submitted',
+        personal_info: applicationData.personalInfo,
+        uploaded_documents: uploadedDocuments,
+        application_data: {
+          scheme_name: scheme.translations?.title || scheme.key,
+          applied_at: new Date().toISOString(),
+          steps_completed: totalSteps
+        },
+        submitted_at: new Date().toISOString()
+      };
+
+      console.log('Creating application record:', applicationRecord);
+
+      const { data: applicationData, error: applicationError } = await supabase
         .from('scheme_applications')
-        .insert({
-          user_id: user.id,
-          scheme_id: scheme.id,
-          status: 'submitted',
-          personal_info: applicationData.personalInfo,
-          uploaded_documents: uploadedDocuments,
-          submitted_at: new Date().toISOString()
-        });
+        .insert(applicationRecord)
+        .select()
+        .single();
 
-      if (applicationError) throw applicationError;
+      if (applicationError) {
+        console.error('Application creation error:', applicationError);
+        throw new Error(`Failed to submit application: ${applicationError.message}`);
+      }
 
-      toast.success(t('application.submitted'));
+      console.log('Application created successfully:', applicationData);
+
+      toast.success('Application submitted successfully! You can track its status in your dashboard.');
       onClose();
+      
+      // Reset form
+      setCurrentStep(1);
+      setApplicationData({
+        personalInfo: {
+          fullName: '',
+          email: user?.email || '',
+          phone: '',
+          address: '',
+          dateOfBirth: '',
+          occupation: '',
+          income: ''
+        },
+        documents: []
+      });
+
     } catch (error) {
       console.error('Application submission error:', error);
-      toast.error(t('application.submitError'));
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit application. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -173,12 +246,23 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
     }
   };
 
+  const canProceedToNext = () => {
+    switch (currentStep) {
+      case 1:
+        return validatePersonalInfo();
+      case 2:
+        return validateDocuments();
+      default:
+        return true;
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-900">
-            {t('application.title')} - {scheme.translations?.title}
+            Apply for {scheme.translations?.title || scheme.key}
           </DialogTitle>
         </DialogHeader>
 
@@ -186,8 +270,8 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
           {/* Progress Bar */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm font-medium">
-              <span>{t('application.step')} {currentStep} {t('application.of')} {totalSteps}</span>
-              <span>{Math.round(progress)}% {t('application.complete')}</span>
+              <span>Step {currentStep} of {totalSteps}</span>
+              <span>{Math.round(progress)}% Complete</span>
             </div>
             <Progress value={progress} className="w-full" />
           </div>
@@ -204,21 +288,24 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
               onClick={handlePrevious}
               disabled={currentStep === 1}
             >
-              {t('common.previous')}
+              Previous
             </Button>
 
             <div className="flex gap-3">
               {currentStep < totalSteps ? (
-                <Button onClick={handleNext}>
-                  {t('common.next')}
+                <Button 
+                  onClick={handleNext}
+                  disabled={!canProceedToNext()}
+                >
+                  Next
                 </Button>
               ) : (
                 <Button
                   onClick={handleSubmit}
-                  disabled={loading}
+                  disabled={loading || !canProceedToNext()}
                   className="bg-green-600 hover:bg-green-700"
                 >
-                  {loading ? t('application.submitting') : t('application.submit')}
+                  {loading ? 'Submitting...' : 'Submit Application'}
                 </Button>
               )}
             </div>

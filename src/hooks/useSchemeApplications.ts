@@ -7,7 +7,7 @@ interface SchemeApplication {
   id: string;
   scheme_id: string;
   user_id: string;
-  status: string; // Changed from union type to string to match database
+  status: string;
   personal_info: any;
   uploaded_documents: any[];
   application_data: any;
@@ -35,8 +35,9 @@ export const useSchemeApplications = () => {
     try {
       setLoading(true);
       setError(null);
+      console.log('Fetching applications for user:', user.id);
 
-      // Fetch applications first
+      // Fetch applications with enhanced error handling
       const { data: applicationsData, error: applicationsError } = await supabase
         .from('scheme_applications')
         .select('*')
@@ -44,54 +45,86 @@ export const useSchemeApplications = () => {
         .order('created_at', { ascending: false });
 
       if (applicationsError) {
+        console.error('Error fetching applications:', applicationsError);
         throw applicationsError;
+      }
+
+      console.log('Raw applications data:', applicationsData);
+
+      if (!applicationsData || applicationsData.length === 0) {
+        console.log('No applications found for user');
+        setApplications([]);
+        return;
       }
 
       // Process applications and add scheme names
       const processedApplications = await Promise.all(
-        (applicationsData || []).map(async (app, index) => {
+        applicationsData.map(async (app, index) => {
           let schemeName = 'Unknown Scheme';
           
-          // Try to get scheme name from different sources
           try {
-            // First try central_government_schemes
-            const { data: centralScheme } = await supabase
-              .from('central_government_schemes')
-              .select('scheme_name')
-              .eq('id', app.scheme_id)
-              .single();
-            
-            if (centralScheme?.scheme_name) {
-              schemeName = centralScheme.scheme_name;
+            // Try to get scheme name from application_data first
+            if (app.application_data?.scheme_name) {
+              schemeName = app.application_data.scheme_name;
             } else {
-              // Then try schemes table
-              const { data: scheme } = await supabase
-                .from('schemes')
-                .select('key')
+              // Then try central_government_schemes
+              const { data: centralScheme } = await supabase
+                .from('central_government_schemes')
+                .select('scheme_name')
                 .eq('id', app.scheme_id)
-                .single();
+                .maybeSingle();
               
-              if (scheme?.key) {
-                schemeName = scheme.key;
+              if (centralScheme?.scheme_name) {
+                schemeName = centralScheme.scheme_name;
+              } else {
+                // Then try schemes table
+                const { data: scheme } = await supabase
+                  .from('schemes')
+                  .select('key')
+                  .eq('id', app.scheme_id)
+                  .maybeSingle();
+                
+                if (scheme?.key) {
+                  schemeName = scheme.key;
+                } else {
+                  // Finally try external_schemes
+                  const { data: externalScheme } = await supabase
+                    .from('external_schemes')
+                    .select('scheme_name')
+                    .eq('id', app.scheme_id)
+                    .maybeSingle();
+                  
+                  if (externalScheme?.scheme_name) {
+                    schemeName = externalScheme.scheme_name;
+                  }
+                }
               }
             }
           } catch (schemeError) {
-            console.warn('Could not fetch scheme name:', schemeError);
+            console.warn('Could not fetch scheme name for application:', app.id, schemeError);
           }
+          
+          // Generate application number for submitted applications
+          const applicationNumber = app.submitted_at 
+            ? `APP${new Date(app.submitted_at).getFullYear()}${String(index + 1).padStart(4, '0')}`
+            : undefined;
           
           return {
             ...app,
             scheme_name: schemeName,
-            application_number: app.submitted_at ? `MS${Date.now().toString().slice(-6)}${index}` : undefined,
+            application_number: applicationNumber,
             estimated_approval_days: getEstimatedApprovalDays(app.status)
           } as SchemeApplication;
         })
       );
 
+      console.log('Processed applications:', processedApplications);
       setApplications(processedApplications);
     } catch (err) {
-      console.error('Error fetching applications:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch applications');
+      console.error('Error in fetchApplications:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch applications';
+      setError(errorMessage);
+      toast.error(`Failed to load applications: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -103,35 +136,52 @@ export const useSchemeApplications = () => {
         return 15; // 15 days for initial review
       case 'under_review':
         return 10; // 10 days for detailed review
+      case 'approved':
+      case 'rejected':
+        return 0; // No more waiting
       default:
         return 0;
     }
   };
 
   const updateApplicationStatus = async (applicationId: string, status: string) => {
+    if (!user) {
+      return { success: false, error: 'User not authenticated' };
+    }
+
     try {
-      const updateData: any = { status, updated_at: new Date().toISOString() };
+      console.log('Updating application status:', applicationId, status);
+      
+      const updateData: any = { 
+        status, 
+        updated_at: new Date().toISOString() 
+      };
       
       // If status is changing to submitted, set submitted_at
-      if (status === 'submitted') {
+      if (status === 'submitted' && !applications.find(app => app.id === applicationId)?.submitted_at) {
         updateData.submitted_at = new Date().toISOString();
       }
 
       const { error } = await supabase
         .from('scheme_applications')
         .update(updateData)
-        .eq('id', applicationId);
+        .eq('id', applicationId)
+        .eq('user_id', user.id); // Ensure user can only update their own applications
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating application status:', error);
+        throw error;
+      }
 
       // Refresh applications after update
       await fetchApplications();
       return { success: true };
     } catch (err) {
-      console.error('Error updating application status:', err);
+      console.error('Error in updateApplicationStatus:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update application';
       return { 
         success: false, 
-        error: err instanceof Error ? err.message : 'Failed to update application' 
+        error: errorMessage
       };
     }
   };

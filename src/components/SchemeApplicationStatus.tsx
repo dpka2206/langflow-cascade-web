@@ -1,15 +1,19 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle, XCircle, AlertCircle, FileText } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, AlertCircle, FileText, Calendar, User } from 'lucide-react';
 
 interface SchemeApplication {
   id: string;
   scheme_name: string;
-  status: string; // Changed from union type to string to match database
+  status: string;
   submitted_at: string | null;
   estimated_approval_days?: number;
   application_number?: string;
+  personal_info?: any;
+  uploaded_documents?: any[];
+  created_at: string;
 }
 
 interface SchemeApplicationStatusProps {
@@ -81,6 +85,16 @@ const SchemeApplicationStatus: React.FC<SchemeApplicationStatusProps> = ({ appli
     }
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -122,7 +136,8 @@ const SchemeApplicationStatus: React.FC<SchemeApplicationStatusProps> = ({ appli
                   {application.scheme_name}
                 </CardTitle>
                 {application.application_number && (
-                  <p className="text-sm text-gray-600 mb-2">
+                  <p className="text-sm text-gray-600 mb-2 flex items-center gap-1">
+                    <FileText className="h-3 w-3" />
                     Application #: {application.application_number}
                   </p>
                 )}
@@ -136,22 +151,39 @@ const SchemeApplicationStatus: React.FC<SchemeApplicationStatusProps> = ({ appli
           
           <CardContent className="pt-0">
             <div className="space-y-3">
-              {application.submitted_at && (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600 flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  Applied:
+                </span>
+                <span className="font-medium">
+                  {application.submitted_at 
+                    ? formatDate(application.submitted_at)
+                    : formatDate(application.created_at)
+                  }
+                </span>
+              </div>
+
+              {application.personal_info?.fullName && (
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">Submitted:</span>
-                  <span className="font-medium">
-                    {new Date(application.submitted_at).toLocaleDateString('en-IN', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
+                  <span className="text-gray-600 flex items-center gap-1">
+                    <User className="h-3 w-3" />
+                    Applicant:
                   </span>
+                  <span className="font-medium">{application.personal_info.fullName}</span>
+                </div>
+              )}
+
+              {application.uploaded_documents && application.uploaded_documents.length > 0 && (
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Documents:</span>
+                  <span className="font-medium">{application.uploaded_documents.length} uploaded</span>
                 </div>
               )}
               
               {application.status !== 'draft' && (
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">Status:</span>
+                  <span className="text-gray-600">Timeline:</span>
                   <span className="font-medium">
                     {getEstimatedTime(application.status, application.submitted_at, application.estimated_approval_days)}
                   </span>
@@ -175,6 +207,17 @@ const SchemeApplicationStatus: React.FC<SchemeApplicationStatusProps> = ({ appli
                     <XCircle className="h-4 w-4 text-red-600" />
                     <span className="text-red-800 font-medium text-sm">
                       Application was not approved. Please check requirements and reapply.
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {application.status === 'under_review' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
+                  <div className="flex items-center space-x-2">
+                    <AlertCircle className="h-4 w-4 text-yellow-600" />
+                    <span className="text-yellow-800 font-medium text-sm">
+                      Your application is currently under review. We'll notify you of any updates.
                     </span>
                   </div>
                 </div>
