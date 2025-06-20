@@ -45,6 +45,7 @@ const logNotification = async (
       message,
       error_details: errorDetails
     });
+    console.log(`Logged notification: ${channel} - ${status}`);
   } catch (error) {
     console.error('Error logging notification:', error);
   }
@@ -55,21 +56,21 @@ const sendEmailNotification = async (
   title: string,
   message: string
 ): Promise<{ success: boolean; error?: string }> => {
-  // Simulate email sending - replace with actual email service
   try {
-    // Here you would integrate with your email service (e.g., Resend, SendGrid, etc.)
-    console.log(`Sending email to ${email}: ${title} - ${message}`);
+    console.log(`Attempting to send email to ${email}: ${title} - ${message}`);
+    
+    // For now, we'll simulate email sending since no email service is configured
+    // In a real implementation, you would integrate with an email service like Resend
     
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Simulate 90% success rate
-    if (Math.random() > 0.1) {
-      return { success: true };
-    } else {
-      return { success: false, error: 'Email service unavailable' };
-    }
+    // Simulate success for demo purposes
+    console.log(`Email sent successfully to ${email}`);
+    return { success: true };
+    
   } catch (error) {
+    console.error(`Email sending failed: ${error.message}`);
     return { success: false, error: error.message };
   }
 };
@@ -78,21 +79,25 @@ const sendSMSNotification = async (
   phoneNumber: string,
   message: string
 ): Promise<{ success: boolean; error?: string }> => {
-  // Simulate SMS sending - replace with actual SMS service
   try {
-    // Here you would integrate with your SMS service (e.g., Twilio, AWS SNS, etc.)
-    console.log(`Sending SMS to ${phoneNumber}: ${message}`);
+    console.log(`Attempting to send SMS to ${phoneNumber}: ${message}`);
+    
+    // For now, we'll simulate SMS sending since no SMS service is configured
+    // In a real implementation, you would integrate with an SMS service like Twilio
     
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Simulate 85% success rate
+    // Simulate 85% success rate for demo
     if (Math.random() > 0.15) {
+      console.log(`SMS sent successfully to ${phoneNumber}`);
       return { success: true };
     } else {
+      console.log(`SMS failed to ${phoneNumber}: Service unavailable`);
       return { success: false, error: 'SMS service unavailable' };
     }
   } catch (error) {
+    console.error(`SMS sending failed: ${error.message}`);
     return { success: false, error: error.message };
   }
 };
@@ -101,21 +106,25 @@ const sendWhatsAppNotification = async (
   phoneNumber: string,
   message: string
 ): Promise<{ success: boolean; error?: string }> => {
-  // Simulate WhatsApp sending - replace with actual WhatsApp Business API
   try {
-    // Here you would integrate with WhatsApp Business API
-    console.log(`Sending WhatsApp to ${phoneNumber}: ${message}`);
+    console.log(`Attempting to send WhatsApp to ${phoneNumber}: ${message}`);
+    
+    // For now, we'll simulate WhatsApp sending since no WhatsApp service is configured
+    // In a real implementation, you would integrate with WhatsApp Business API
     
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Simulate 80% success rate
+    // Simulate 80% success rate for demo
     if (Math.random() > 0.2) {
+      console.log(`WhatsApp sent successfully to ${phoneNumber}`);
       return { success: true };
     } else {
+      console.log(`WhatsApp failed to ${phoneNumber}: Service unavailable`);
       return { success: false, error: 'WhatsApp service unavailable' };
     }
   } catch (error) {
+    console.error(`WhatsApp sending failed: ${error.message}`);
     return { success: false, error: error.message };
   }
 };
@@ -128,7 +137,10 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { user_id, notification_type, title, message, scheme_id }: NotificationRequest = await req.json();
 
+    console.log(`Processing notification request for user: ${user_id}, type: ${notification_type}`);
+
     if (!user_id || !notification_type || !title || !message) {
+      console.error('Missing required fields in request');
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -138,11 +150,14 @@ const handler = async (req: Request): Promise<Response> => {
     // Get user's email from auth.users
     const { data: userData, error: userError } = await supabase.auth.admin.getUserById(user_id);
     if (userError || !userData.user) {
+      console.error('User not found:', userError);
       return new Response(
         JSON.stringify({ error: 'User not found' }),
         { status: 404, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
+
+    console.log(`Found user email: ${userData.user.email}`);
 
     // Get user's notification preferences
     const { data: preferences, error: prefsError } = await supabase
@@ -165,49 +180,63 @@ const handler = async (req: Request): Promise<Response> => {
       whatsapp_enabled: false
     };
 
+    console.log('User preferences:', userPrefs);
+
     const results = [];
+    const fullMessage = `${title}: ${message}`;
 
     // Send email notification
     if (userPrefs.email_enabled && userData.user.email) {
+      console.log('Sending email notification...');
       const emailResult = await sendEmailNotification(userData.user.email, title, message);
       await logNotification(
         user_id,
         notification_type,
         'email',
         emailResult.success ? 'sent' : 'failed',
-        `${title}: ${message}`,
+        fullMessage,
         emailResult.error
       );
       results.push({ channel: 'email', success: emailResult.success, error: emailResult.error });
+    } else {
+      console.log('Email notification skipped - not enabled or no email address');
     }
 
     // Send SMS notification
     if (userPrefs.sms_enabled && userPrefs.phone_number) {
-      const smsResult = await sendSMSNotification(userPrefs.phone_number, `${title}: ${message}`);
+      console.log('Sending SMS notification...');
+      const smsResult = await sendSMSNotification(userPrefs.phone_number, fullMessage);
       await logNotification(
         user_id,
         notification_type,
         'sms',
         smsResult.success ? 'sent' : 'failed',
-        `${title}: ${message}`,
+        fullMessage,
         smsResult.error
       );
       results.push({ channel: 'sms', success: smsResult.success, error: smsResult.error });
+    } else {
+      console.log('SMS notification skipped - not enabled or no phone number');
     }
 
     // Send WhatsApp notification
     if (userPrefs.whatsapp_enabled && userPrefs.whatsapp_number) {
-      const whatsappResult = await sendWhatsAppNotification(userPrefs.whatsapp_number, `${title}: ${message}`);
+      console.log('Sending WhatsApp notification...');
+      const whatsappResult = await sendWhatsAppNotification(userPrefs.whatsapp_number, fullMessage);
       await logNotification(
         user_id,
         notification_type,
         'whatsapp',
         whatsappResult.success ? 'sent' : 'failed',
-        `${title}: ${message}`,
+        fullMessage,
         whatsappResult.error
       );
       results.push({ channel: 'whatsapp', success: whatsappResult.success, error: whatsappResult.error });
+    } else {
+      console.log('WhatsApp notification skipped - not enabled or no WhatsApp number');
     }
+
+    console.log(`Notification processing complete. Results:`, results);
 
     return new Response(
       JSON.stringify({ 
@@ -224,7 +253,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error) {
     console.error('Error in send-notifications function:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ error: 'Internal server error', details: error.message }),
       {
         status: 500,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
