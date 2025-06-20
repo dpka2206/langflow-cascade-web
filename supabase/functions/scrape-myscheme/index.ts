@@ -20,58 +20,99 @@ serve(async (req) => {
 
     console.log('Starting myscheme.gov scraping...')
 
-    // Scrape the main schemes listing page
-    const response = await fetch('https://www.myscheme.gov.in/schemes', {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      }
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const html = await response.text()
-    
-    // Parse HTML and extract scheme data
-    const schemes = await parseSchemeData(html)
+    // Get sample schemes data (in production, this would scrape myscheme.gov)
+    const schemes = getSampleSchemeData()
     
     console.log(`Found ${schemes.length} schemes to process`)
+
+    let successCount = 0
+    let errorCount = 0
 
     // Insert schemes into database
     for (const scheme of schemes) {
       try {
-        // Insert main scheme data
-        const { data: schemeData, error: schemeError } = await supabaseClient
+        console.log(`Processing scheme: ${scheme.name}`)
+
+        // Check if scheme already exists
+        const { data: existingScheme } = await supabaseClient
           .from('central_government_schemes')
-          .insert({
-            scheme_name: scheme.name,
-            scheme_code: scheme.code,
-            ministry: scheme.ministry,
-            department: scheme.department,
-            description: scheme.description,
-            objectives: scheme.objectives,
-            benefits: scheme.benefits,
-            eligibility_criteria: scheme.eligibility,
-            application_process: scheme.applicationProcess,
-            required_documents: scheme.documents,
-            scheme_url: scheme.url,
-            category: scheme.category,
-            target_beneficiaries: scheme.targetBeneficiaries,
-            funding_pattern: scheme.fundingPattern,
-            implementation_agency: scheme.implementationAgency,
-            launch_date: scheme.launchDate,
-            status: 'active'
-          })
           .select('id')
+          .eq('scheme_name', scheme.name)
           .single()
 
-        if (schemeError) {
-          console.error('Error inserting scheme:', schemeError)
-          continue
+        let schemeId
+
+        if (existingScheme) {
+          // Update existing scheme
+          const { data: updatedScheme, error: updateError } = await supabaseClient
+            .from('central_government_schemes')
+            .update({
+              scheme_code: scheme.code,
+              ministry: scheme.ministry,
+              department: scheme.department,
+              description: scheme.description,
+              objectives: scheme.objectives,
+              benefits: scheme.benefits,
+              eligibility_criteria: scheme.eligibility,
+              application_process: scheme.applicationProcess,
+              required_documents: scheme.documents,
+              scheme_url: scheme.url,
+              category: scheme.category,
+              target_beneficiaries: scheme.targetBeneficiaries,
+              funding_pattern: scheme.fundingPattern,
+              implementation_agency: scheme.implementationAgency,
+              launch_date: scheme.launchDate,
+              status: 'active',
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', existingScheme.id)
+            .select('id')
+            .single()
+
+          if (updateError) {
+            console.error('Error updating scheme:', updateError)
+            errorCount++
+            continue
+          }
+          schemeId = existingScheme.id
+        } else {
+          // Insert new scheme
+          const { data: newScheme, error: insertError } = await supabaseClient
+            .from('central_government_schemes')
+            .insert({
+              scheme_name: scheme.name,
+              scheme_code: scheme.code,
+              ministry: scheme.ministry,
+              department: scheme.department,
+              description: scheme.description,
+              objectives: scheme.objectives,
+              benefits: scheme.benefits,
+              eligibility_criteria: scheme.eligibility,
+              application_process: scheme.applicationProcess,
+              required_documents: scheme.documents,
+              scheme_url: scheme.url,
+              category: scheme.category,
+              target_beneficiaries: scheme.targetBeneficiaries,
+              funding_pattern: scheme.fundingPattern,
+              implementation_agency: scheme.implementationAgency,
+              launch_date: scheme.launchDate,
+              status: 'active'
+            })
+            .select('id')
+            .single()
+
+          if (insertError) {
+            console.error('Error inserting scheme:', insertError)
+            errorCount++
+            continue
+          }
+          schemeId = newScheme.id
         }
 
-        const schemeId = schemeData.id
+        // Clean up existing related data for this scheme
+        await supabaseClient.from('scheme_categories').delete().eq('scheme_id', schemeId)
+        await supabaseClient.from('scheme_beneficiaries').delete().eq('scheme_id', schemeId)
+        await supabaseClient.from('scheme_documents').delete().eq('scheme_id', schemeId)
 
         // Insert categories
         if (scheme.categories && scheme.categories.length > 0) {
@@ -81,9 +122,13 @@ serve(async (req) => {
             sub_category: cat.subCategory
           }))
 
-          await supabaseClient
+          const { error: categoryError } = await supabaseClient
             .from('scheme_categories')
             .insert(categoryInserts)
+
+          if (categoryError) {
+            console.error('Error inserting categories:', categoryError)
+          }
         }
 
         // Insert beneficiaries
@@ -98,9 +143,13 @@ serve(async (req) => {
             location_criteria: ben.locationCriteria
           }))
 
-          await supabaseClient
+          const { error: beneficiaryError } = await supabaseClient
             .from('scheme_beneficiaries')
             .insert(beneficiaryInserts)
+
+          if (beneficiaryError) {
+            console.error('Error inserting beneficiaries:', beneficiaryError)
+          }
         }
 
         // Insert documents
@@ -112,23 +161,32 @@ serve(async (req) => {
             is_mandatory: doc.mandatory
           }))
 
-          await supabaseClient
+          const { error: documentError } = await supabaseClient
             .from('scheme_documents')
             .insert(documentInserts)
+
+          if (documentError) {
+            console.error('Error inserting documents:', documentError)
+          }
         }
 
         console.log(`Successfully processed scheme: ${scheme.name}`)
+        successCount++
 
       } catch (error) {
         console.error(`Error processing scheme ${scheme.name}:`, error)
+        errorCount++
       }
     }
+
+    console.log(`Scraping completed. Success: ${successCount}, Errors: ${errorCount}`)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Successfully scraped and stored ${schemes.length} schemes`,
-        schemes: schemes.length 
+        message: `Successfully processed ${successCount} schemes with ${errorCount} errors`,
+        schemes: successCount,
+        errors: errorCount
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -151,13 +209,8 @@ serve(async (req) => {
   }
 })
 
-async function parseSchemeData(html: string) {
-  // This is a simplified parser - in a real implementation, you'd use a more robust HTML parser
-  const schemes = []
-  
-  // Sample data structure for demonstration
-  // In a real implementation, you would parse the actual HTML structure from myscheme.gov
-  const sampleSchemes = [
+function getSampleSchemeData() {
+  return [
     {
       name: "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
       code: "PM-KISAN-001",
@@ -192,6 +245,77 @@ async function parseSchemeData(html: string) {
         { name: "Aadhaar Card", type: "Identity", mandatory: true },
         { name: "Bank Account Details", type: "Financial", mandatory: true },
         { name: "Land Records", type: "Property", mandatory: true }
+      ]
+    },
+    {
+      name: "Kisan Credit Card (KCC)",
+      code: "KCC-001",
+      ministry: "Ministry of Agriculture and Farmers Welfare",
+      department: "Department of Agriculture and Cooperation",
+      description: "Credit facility for farmers to meet their cultivation expenses and other agricultural needs",
+      objectives: "To provide adequate and timely credit support from the banking system to the farmers for their cultivation and other needs",
+      benefits: "Credit limit up to Rs. 3 lakh without collateral security",
+      eligibility: "All farmers including tenant farmers, oral lessees, and sharecroppers",
+      applicationProcess: "Apply through any bank branch or online through bank portals",
+      documents: "Land documents, Identity proof, Address proof, Income certificate",
+      url: "https://www.pmkisan.gov.in/",
+      category: "agriculture",
+      targetBeneficiaries: "All categories of farmers",
+      fundingPattern: "Banking system with government support",
+      implementationAgency: "Banks and Financial Institutions",
+      launchDate: "1998-08-01",
+      categories: [
+        { name: "Agriculture", subCategory: "Credit Support" }
+      ],
+      beneficiaries: [
+        {
+          type: "Farmers",
+          ageGroup: "18+",
+          gender: "All",
+          incomeCriteria: "All income groups",
+          casteCriteria: "All categories",
+          locationCriteria: "All states"
+        }
+      ],
+      requiredDocuments: [
+        { name: "Land Documents", type: "Property", mandatory: true },
+        { name: "Identity Proof", type: "Identity", mandatory: true },
+        { name: "Address Proof", type: "Address", mandatory: true }
+      ]
+    },
+    {
+      name: "Soil Health Card Scheme",
+      code: "SHC-001",
+      ministry: "Ministry of Agriculture and Farmers Welfare",
+      department: "Department of Agriculture and Cooperation",
+      description: "Provide soil health cards to farmers which carry crop-wise recommendations of nutrients and fertilizers",
+      objectives: "To promote judicious use of fertilizers and improve soil health and fertility",
+      benefits: "Free soil testing and customized fertilizer recommendations",
+      eligibility: "All farmers across the country",
+      applicationProcess: "Apply through agriculture department or online portal",
+      documents: "Land records, Farmer identification",
+      url: "https://soilhealth.dac.gov.in/",
+      category: "agriculture",
+      targetBeneficiaries: "All farmers",
+      fundingPattern: "100% Central Government funding",
+      implementationAgency: "State Agriculture Departments",
+      launchDate: "2015-02-19",
+      categories: [
+        { name: "Agriculture", subCategory: "Soil Management" }
+      ],
+      beneficiaries: [
+        {
+          type: "Farmers",
+          ageGroup: "18+",
+          gender: "All",
+          incomeCriteria: "All income groups",
+          casteCriteria: "All categories",
+          locationCriteria: "All states"
+        }
+      ],
+      requiredDocuments: [
+        { name: "Land Records", type: "Property", mandatory: true },
+        { name: "Farmer ID", type: "Identity", mandatory: true }
       ]
     },
     {
@@ -300,8 +424,78 @@ async function parseSchemeData(html: string) {
         { name: "Identity Proof", type: "Identity", mandatory: true },
         { name: "Address Proof", type: "Address", mandatory: true }
       ]
+    },
+    {
+      name: "National Rural Employment Guarantee Act (NREGA/MGNREGA)",
+      code: "NREGA-001",
+      ministry: "Ministry of Rural Development",
+      department: "Department of Rural Development",
+      description: "Guaranteed wage employment scheme providing 200 days of employment per year to rural households",
+      objectives: "To enhance livelihood security of households in rural areas by providing guaranteed wage employment",
+      benefits: "Guaranteed 200 days of wage employment per financial year",
+      eligibility: "Adult members of rural households willing to do unskilled manual work",
+      applicationProcess: "Apply through Gram Panchayat or online through NREGA portal",
+      documents: "Job card, Bank account details, Aadhaar card",
+      url: "https://www.nrega.nic.in/",
+      category: "employment",
+      targetBeneficiaries: "Rural households",
+      fundingPattern: "Central and State Government funding",
+      implementationAgency: "Gram Panchayats",
+      launchDate: "2005-02-02",
+      categories: [
+        { name: "Employment", subCategory: "Rural Employment" }
+      ],
+      beneficiaries: [
+        {
+          type: "Rural Households",
+          ageGroup: "18+",
+          gender: "All",
+          incomeCriteria: "All income groups",
+          casteCriteria: "All categories",
+          locationCriteria: "Rural areas"
+        }
+      ],
+      requiredDocuments: [
+        { name: "Job Card", type: "Employment", mandatory: true },
+        { name: "Bank Account Details", type: "Financial", mandatory: true },
+        { name: "Aadhaar Card", type: "Identity", mandatory: false }
+      ]
+    },
+    {
+      name: "Pradhan Mantri Scholarship Scheme",
+      code: "PMS-001",
+      ministry: "Ministry of Defence",
+      department: "Department of Ex-Servicemen Welfare",
+      description: "Scholarship scheme for children and widows of ex-servicemen for higher education",
+      objectives: "To encourage higher education among children and widows of ex-servicemen",
+      benefits: "Monthly scholarship ranging from Rs. 2000 to Rs. 3000",
+      eligibility: "Children and widows of ex-servicemen for graduation and post-graduation courses",
+      applicationProcess: "Apply online through National Scholarship Portal",
+      documents: "Ex-serviceman certificate, Academic certificates, Income certificate",
+      url: "https://scholarships.gov.in/",
+      category: "education",
+      targetBeneficiaries: "Ex-servicemen families",
+      fundingPattern: "100% Central Government funding",
+      implementationAgency: "Department of Ex-Servicemen Welfare",
+      launchDate: "2006-01-01",
+      categories: [
+        { name: "Education", subCategory: "Higher Education" }
+      ],
+      beneficiaries: [
+        {
+          type: "Students",
+          ageGroup: "18-35",
+          gender: "All",
+          incomeCriteria: "Ex-servicemen families",
+          casteCriteria: "All categories",
+          locationCriteria: "All states"
+        }
+      ],
+      requiredDocuments: [
+        { name: "Ex-Serviceman Certificate", type: "Service", mandatory: true },
+        { name: "Academic Certificates", type: "Educational", mandatory: true },
+        { name: "Income Certificate", type: "Financial", mandatory: true }
+      ]
     }
   ]
-
-  return sampleSchemes
 }

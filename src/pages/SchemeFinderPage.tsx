@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useSearchParams } from 'react-router-dom';
@@ -86,13 +85,17 @@ const SchemeFinderPage = () => {
     try {
       setLoading(true);
       
+      console.log('Fetching schemes...');
+      
       // Fetch regular schemes
       const { data: schemesData, error: schemesError } = await supabase
         .from('schemes')
         .select('*')
         .eq('status', 'active');
 
-      if (schemesError) throw schemesError;
+      if (schemesError) {
+        console.error('Error fetching schemes:', schemesError);
+      }
 
       // Fetch central government schemes
       const { data: centralSchemesData, error: centralSchemesError } = await supabase
@@ -100,14 +103,20 @@ const SchemeFinderPage = () => {
         .select('*')
         .eq('status', 'active');
 
-      if (centralSchemesError) throw centralSchemesError;
+      if (centralSchemesError) {
+        console.error('Error fetching central schemes:', centralSchemesError);
+      }
+
+      console.log('Central schemes data:', centralSchemesData);
 
       const { data: translationsData, error: translationsError } = await supabase
         .from('scheme_translations')
         .select('*')
         .eq('language', language);
 
-      if (translationsError) throw translationsError;
+      if (translationsError) {
+        console.error('Error fetching translations:', translationsError);
+      }
 
       // Process regular schemes
       const schemesWithTranslations = schemesData?.map(scheme => {
@@ -126,24 +135,30 @@ const SchemeFinderPage = () => {
       }) || [];
 
       // Process central government schemes
-      const centralSchemes = centralSchemesData?.map(scheme => ({
-        id: scheme.id,
-        key: scheme.scheme_code || scheme.id,
-        category: scheme.category || 'other',
-        status: scheme.status,
-        created_at: scheme.created_at,
-        scheme_type: 'central' as 'central' | 'state',
-        translations: {
-          title: scheme.scheme_name,
-          description: scheme.description || '',
-          benefits: scheme.benefits ? [scheme.benefits] : [],
-          eligibility: scheme.eligibility_criteria ? [scheme.eligibility_criteria] : [],
-          documents: scheme.required_documents ? scheme.required_documents.split(',').map(doc => doc.trim()) : []
-        }
-      })) || [];
+      const centralSchemes = centralSchemesData?.map(scheme => {
+        console.log('Processing central scheme:', scheme.scheme_name, 'Category:', scheme.category);
+        return {
+          id: scheme.id,
+          key: scheme.scheme_code || scheme.id,
+          category: scheme.category || 'other',
+          status: scheme.status,
+          created_at: scheme.created_at,
+          scheme_type: 'central' as 'central' | 'state',
+          translations: {
+            title: scheme.scheme_name,
+            description: scheme.description || 'No description available',
+            benefits: scheme.benefits ? [scheme.benefits] : [],
+            eligibility: scheme.eligibility_criteria ? [scheme.eligibility_criteria] : [],
+            documents: scheme.required_documents ? scheme.required_documents.split(',').map(doc => doc.trim()) : []
+          }
+        };
+      }) || [];
+
+      console.log('Processed central schemes:', centralSchemes);
 
       // Combine all schemes
       const allSchemes = [...schemesWithTranslations, ...centralSchemes];
+      console.log('All schemes:', allSchemes);
       setSchemes(allSchemes);
     } catch (error) {
       console.error('Error fetching schemes:', error);
@@ -154,6 +169,9 @@ const SchemeFinderPage = () => {
 
   const applyFilters = () => {
     let filtered = [...schemes];
+
+    console.log('Applying filters to schemes:', schemes.length);
+    console.log('Current filters:', filters);
 
     // Apply search filter
     if (filters.searchQuery) {
@@ -167,9 +185,14 @@ const SchemeFinderPage = () => {
 
     // Apply category filter
     if (filters.category && filters.category !== 'all') {
-      filtered = filtered.filter(scheme => scheme.category === filters.category);
+      console.log('Filtering by category:', filters.category);
+      filtered = filtered.filter(scheme => {
+        console.log('Scheme category:', scheme.category, 'Filter category:', filters.category);
+        return scheme.category === filters.category;
+      });
     }
 
+    console.log('Filtered schemes:', filtered.length);
     setFilteredSchemes(filtered);
   };
 
@@ -179,6 +202,9 @@ const SchemeFinderPage = () => {
 
   const centralSchemes = filteredSchemes.filter(scheme => scheme.scheme_type === 'central');
   const stateSchemes = filteredSchemes.filter(scheme => scheme.scheme_type === 'state');
+
+  console.log('Central schemes count:', centralSchemes.length);
+  console.log('State schemes count:', stateSchemes.length);
 
   if (isPersonalized) {
     return (
