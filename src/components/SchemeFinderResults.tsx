@@ -17,7 +17,7 @@ import {
   Gift,
   UserCheck
 } from 'lucide-react';
-import { Scheme } from '@/pages/SchemeFinderPage';
+import { Scheme } from '@/types/scheme';
 import SchemeDetailModal from '@/components/SchemeDetailModal';
 import SchemeApplicationForm from '@/components/SchemeApplicationForm';
 

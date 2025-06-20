@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Filter } from 'lucide-react';
-import { FilterState } from '@/pages/SchemeFinderPage';
+import { FilterState } from '@/types/scheme';
 
 interface SchemeFinderFiltersProps {
   filters: FilterState;
