@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import SchemeFinderFilters from '@/components/SchemeFinderFilters';
 import SchemeFinderResults from '@/components/SchemeFinderResults';
+import SchemeChatbot from '@/components/SchemeChatbot';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -259,6 +260,8 @@ const SchemeFinderPage = () => {
             </TabsContent>
           </Tabs>
         </div>
+        
+        <SchemeChatbot />
       </div>
     );
   }
@@ -333,6 +336,8 @@ const SchemeFinderPage = () => {
           </div>
         </div>
       </div>
+      
+      <SchemeChatbot />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import ServicesSection from "@/components/ServicesSection";
 import PersonalizedSchemeFinder from "@/components/PersonalizedSchemeFinder";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import SchemeChatbot from "@/components/SchemeChatbot";
 
 const Index = () => {
   return (
@@ -17,6 +18,7 @@ const Index = () => {
       <ServicesSection />
       <PersonalizedSchemeFinder />
       <Footer />
+      <SchemeChatbot />
     </div>
   );
 };
