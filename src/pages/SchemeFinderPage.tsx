@@ -57,7 +57,8 @@ const SchemeFinderPage = () => {
   const isPersonalized = searchParams.get('personalized') === 'true';
 
   useEffect(() => {
-    // Initialize filters from URL params if personalized
+    // Initialize filters from URL params
+    const categoryFromUrl = searchParams.get('category');
     if (isPersonalized) {
       const newFilters = {
         age: searchParams.get('age') || 'all',
@@ -67,10 +68,12 @@ const SchemeFinderPage = () => {
         incomeRange: searchParams.get('income') || 'all',
         state: searchParams.get('state') || 'all',
         district: 'all',
-        category: 'all',
+        category: categoryFromUrl || 'all',
         searchQuery: ''
       };
       setFilters(newFilters);
+    } else if (categoryFromUrl) {
+      setFilters(prev => ({ ...prev, category: categoryFromUrl }));
     }
     fetchSchemes();
   }, [language, searchParams]);
@@ -216,6 +219,13 @@ const SchemeFinderPage = () => {
           <p className="text-gray-600">
             {t('schemeFinder.subtitle')}
           </p>
+          {filters.category !== 'all' && (
+            <div className="mt-4">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                {t(`category.${filters.category}`)} {t('schemeFinder.resultsFound')}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -227,11 +237,43 @@ const SchemeFinderPage = () => {
           </div>
           
           <div className="lg:col-span-3">
-            <SchemeFinderResults 
-              schemes={filteredSchemes}
-              loading={loading}
-              searchQuery={filters.searchQuery}
-            />
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 mb-6">
+                <TabsTrigger value="central" className="text-sm font-medium">
+                  {t('schemeFinder.centralSchemes')} ({centralSchemes.length})
+                </TabsTrigger>
+                <TabsTrigger value="state" className="text-sm font-medium">
+                  {t('schemeFinder.stateSchemes')} ({stateSchemes.length})
+                </TabsTrigger>
+                <TabsTrigger value="all" className="text-sm font-medium">
+                  {t('schemeFinder.allSchemes')} ({filteredSchemes.length})
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="central" className="space-y-6">
+                <SchemeFinderResults 
+                  schemes={centralSchemes}
+                  loading={loading}
+                  searchQuery={filters.searchQuery}
+                />
+              </TabsContent>
+
+              <TabsContent value="state" className="space-y-6">
+                <SchemeFinderResults 
+                  schemes={stateSchemes}
+                  loading={loading}
+                  searchQuery={filters.searchQuery}
+                />
+              </TabsContent>
+
+              <TabsContent value="all" className="space-y-6">
+                <SchemeFinderResults 
+                  schemes={filteredSchemes}
+                  loading={loading}
+                  searchQuery={filters.searchQuery}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>

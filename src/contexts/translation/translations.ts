@@ -1,4 +1,3 @@
-
 import { Language } from './types';
 
 export const translations: Record<Language, Record<string, string>> = {
@@ -187,6 +186,10 @@ export const translations: Record<Language, Record<string, string>> = {
     'auth.confirmPassword': 'Confirm Password',
     'auth.signInButton': 'Sign In',
     'auth.signUpButton': 'Create Account',
+
+    // Categories Section
+    'categories.title': 'Government Scheme Categories',
+    'categories.subtitle': 'Explore schemes by different categories',
 
     // Sample Schemes (these would be replaced with actual scheme data)
     'scheme.pmkisan.title': 'PM-KISAN Farmer Support Scheme',
@@ -395,7 +398,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'auth.signInButton': 'సైన్ ఇన్',
     'auth.signUpButton': 'ఖాతా సృష్టించండి',
 
-    // Sample Schemes (these would be replaced with actual scheme data)
+    // Categories Section
+    'categories.title': 'ప్రభుత్వ పథకం వర్గాలు',
+    'categories.subtitle': 'వివిధ వర్గాల ద్వారా పథకాలను అన్వేషించండి',
+
+    // Sample Schemes
     'scheme.pmkisan.title': 'పిఎం-కిసాన్ రైతు మద్దతు పథకం',
     'scheme.pmkisan.description': 'దేశవ్యాప్తంగా రైతు కుటుంబాలకు వారి ఆర్థిక అవసరాలను భర్తీ చేయడానికి ప్రత్యక్ష ఆదాయ మద్దతు.',
     'scheme.pmkisan.eligibility': 'సాగు భూమి ఉన్న చిన్న మరియు ఉపాంత రైతు కుటుంబాలు',
