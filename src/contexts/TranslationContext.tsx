@@ -107,7 +107,8 @@ const translations: Record<string, Translation> = {
       submit: 'Submit',
       cancel: 'Cancel',
       next: 'Next',
-      previous: 'Previous'
+      previous: 'Previous',
+      back: 'Back'
     },
     schemeFinder: {
       title: 'Find Your Perfect Scheme',
@@ -235,6 +236,56 @@ const translations: Record<string, Translation> = {
     },
     admin: {
       title: 'Admin Dashboard'
+    },
+    wizard: {
+      title: 'Personalized Scheme Finder',
+      subtitle: 'Answer a few questions to find schemes that match your profile',
+      findSchemes: 'Find My Schemes',
+      gender: {
+        title: 'What is your gender?',
+        subtitle: 'This helps us find schemes with gender-specific benefits',
+        male: 'Male',
+        female: 'Female',
+        other: 'Other'
+      },
+      age: {
+        title: 'What is your age group?',
+        subtitle: 'Age-specific schemes and benefits are available',
+        under18: 'Under 18',
+        young: '18-35 years',
+        middle: '36-60 years',
+        senior: 'Above 60'
+      },
+      occupation: {
+        title: 'What is your current occupation?',
+        subtitle: 'Find schemes based on your professional background',
+        farmer: 'Farmer/Agriculture',
+        student: 'Student',
+        employed: 'Employed (Salaried)',
+        selfEmployed: 'Self-Employed/Business',
+        unemployed: 'Unemployed/Job Seeker',
+        healthcare: 'Healthcare Worker'
+      },
+      income: {
+        title: 'What is your annual household income?',
+        subtitle: 'Different schemes have income-based eligibility criteria',
+        below2lakh: 'Below ₹2 Lakhs',
+        between2and5lakh: '₹2 - ₹5 Lakhs',
+        between5and10lakh: '₹5 - ₹10 Lakhs',
+        above10lakh: 'Above ₹10 Lakhs'
+      },
+      caste: {
+        title: 'What is your social category?',
+        subtitle: 'Find reservation and category-specific schemes',
+        general: 'General Category',
+        obc: 'Other Backward Classes (OBC)',
+        sc: 'Scheduled Caste (SC)',
+        st: 'Scheduled Tribe (ST)'
+      },
+      state: {
+        title: 'Which state are you from?',
+        subtitle: 'State-specific schemes and benefits are available'
+      }
     }
   },
   te: {
@@ -413,18 +464,18 @@ const translations: Record<string, Translation> = {
       income: {
         title: 'మీ వార్షిక ఆదాయం ఎంత?',
         subtitle: 'వివిధ పథకాలకు ఆదాయ ఆధారిత అర్హత',
-        below2lakh: '₹2 లక్షల కంటే తక్కువ',
-        between2and5lakh: '₹2-5 లక్షలు',
-        between5and10lakh: '₹5-10 లక్షలు',
-        above10lakh: '₹10 లక్షలకు మించి'
+        below2lakh: 'Below ₹2 Lakhs',
+        between2and5lakh: '₹2 - ₹5 Lakhs',
+        between5and10lakh: '₹5 - ₹10 Lakhs',
+        above10lakh: 'Above ₹10 Lakhs'
       },
       caste: {
         title: 'మీ కుల వర్గం ఏమిటి?',
         subtitle: 'రిజర్వేషన్ మరియు వర్గ-నిర్దిష్ట పథకాలను కనుగొనండి',
         general: 'సాధారణ',
-        obc: 'ఓబిసి',
-        sc: 'ఎస్సి',
-        st: 'ఎస్టి'
+        obc: 'Other Backward Classes (OBC)',
+        sc: 'Scheduled Caste (SC)',
+        st: 'Scheduled Tribe (ST)'
       },
       state: {
         title: 'మీరు ఏ రాష్ట్రానికి చెందినవారు?',
