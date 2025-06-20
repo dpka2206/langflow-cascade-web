@@ -50,7 +50,7 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [applicationData, setApplicationData] = useState<ApplicationData>({
+  const [formData, setFormData] = useState<ApplicationData>({
     personalInfo: {
       fullName: '',
       email: user?.email || '',
@@ -74,7 +74,7 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
         uploaded: false,
         status: 'pending'
       }));
-      setApplicationData(prev => ({ ...prev, documents: documentStatuses }));
+      setFormData(prev => ({ ...prev, documents: documentStatuses }));
     }
   }, [scheme]);
 
@@ -91,13 +91,13 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
   };
 
   const validatePersonalInfo = () => {
-    const { personalInfo } = applicationData;
+    const { personalInfo } = formData;
     const required = ['fullName', 'email', 'phone', 'address', 'dateOfBirth'];
     return required.every(field => personalInfo[field as keyof typeof personalInfo]?.trim());
   };
 
   const validateDocuments = () => {
-    const requiredDocs = applicationData.documents.filter(doc => doc.required);
+    const requiredDocs = formData.documents.filter(doc => doc.required);
     return requiredDocs.every(doc => doc.status === 'uploaded');
   };
 
@@ -127,7 +127,7 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
       // Upload documents first
       const uploadedDocuments = [];
       
-      for (const doc of applicationData.documents) {
+      for (const doc of formData.documents) {
         if (doc.file) {
           console.log('Uploading document:', doc.name);
           const fileExt = doc.file.name.split('.').pop();
@@ -162,7 +162,7 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
         user_id: user.id,
         scheme_id: scheme.id,
         status: 'submitted',
-        personal_info: applicationData.personalInfo,
+        personal_info: formData.personalInfo,
         uploaded_documents: uploadedDocuments,
         application_data: {
           scheme_name: scheme.translations?.title || scheme.key,
@@ -174,7 +174,7 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
 
       console.log('Creating application record:', applicationRecord);
 
-      const { data: applicationData, error: applicationError } = await supabase
+      const { data: createdApplication, error: applicationError } = await supabase
         .from('scheme_applications')
         .insert(applicationRecord)
         .select()
@@ -185,14 +185,14 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
         throw new Error(`Failed to submit application: ${applicationError.message}`);
       }
 
-      console.log('Application created successfully:', applicationData);
+      console.log('Application created successfully:', createdApplication);
 
       toast.success('Application submitted successfully! You can track its status in your dashboard.');
       onClose();
       
       // Reset form
       setCurrentStep(1);
-      setApplicationData({
+      setFormData({
         personalInfo: {
           fullName: '',
           email: user?.email || '',
@@ -219,18 +219,18 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
       case 1:
         return (
           <PersonalInfoStep
-            data={applicationData.personalInfo}
+            data={formData.personalInfo}
             onChange={(personalInfo) => 
-              setApplicationData(prev => ({ ...prev, personalInfo }))
+              setFormData(prev => ({ ...prev, personalInfo }))
             }
           />
         );
       case 2:
         return (
           <DocumentUploadStep
-            documents={applicationData.documents}
+            documents={formData.documents}
             onChange={(documents) => 
-              setApplicationData(prev => ({ ...prev, documents }))
+              setFormData(prev => ({ ...prev, documents }))
             }
           />
         );
@@ -238,7 +238,7 @@ const SchemeApplicationForm: React.FC<SchemeApplicationFormProps> = ({
         return (
           <ApplicationSummaryStep
             scheme={scheme}
-            applicationData={applicationData}
+            applicationData={formData}
           />
         );
       default:

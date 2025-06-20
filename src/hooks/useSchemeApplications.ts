@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 interface SchemeApplication {
   id: string;
@@ -64,8 +65,9 @@ export const useSchemeApplications = () => {
           
           try {
             // Try to get scheme name from application_data first
-            if (app.application_data?.scheme_name) {
-              schemeName = app.application_data.scheme_name;
+            const appData = app.application_data as any;
+            if (appData && typeof appData === 'object' && appData.scheme_name) {
+              schemeName = appData.scheme_name;
             } else {
               // Then try central_government_schemes
               const { data: centralScheme } = await supabase
