@@ -46,10 +46,20 @@ serve(async (req) => {
 
     console.log('Received message:', message);
 
+    if (!geminiApiKey) {
+      throw new Error('GEMINI_API_KEY not found');
+    }
+
     // Build the conversation for context
     const messages = [
-      { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
-      { role: 'model', parts: [{ text: 'I understand. I will help users with government schemes and welfare programs, and redirect them politely if they ask about unrelated topics.' }] }
+      {
+        role: 'user',
+        parts: [{ text: SYSTEM_PROMPT }]
+      },
+      {
+        role: 'model',
+        parts: [{ text: 'I understand. I will help users with government schemes and welfare programs, and redirect them politely if they ask about unrelated topics.' }]
+      }
     ];
 
     // Add conversation history
@@ -66,7 +76,7 @@ serve(async (req) => {
       parts: [{ text: message }]
     });
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -82,12 +92,16 @@ serve(async (req) => {
       }),
     });
 
+    console.log('Gemini API response status:', response.status);
+
     if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Gemini API error response:', errorText);
+      throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('Gemini response:', data);
+    console.log('Gemini response:', JSON.stringify(data, null, 2));
 
     const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'I apologize, but I could not generate a response. Please try asking about government schemes or application processes.';
 
