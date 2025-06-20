@@ -2,17 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-
-interface PersonalizedScheme {
-  id: string;
-  scheme_name: string;
-  description: string;
-  category: string;
-  scheme_type: string;
-  eligibility_criteria: any;
-  benefits: any;
-  match_score: number;
-}
+import { Scheme } from '@/types/scheme';
 
 interface UserCriteria {
   gender: string;
@@ -25,7 +15,7 @@ interface UserCriteria {
 
 export const usePersonalizedSchemes = () => {
   const { user } = useAuth();
-  const [schemes, setSchemes] = useState<PersonalizedScheme[]>([]);
+  const [schemes, setSchemes] = useState<Scheme[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,19 +66,36 @@ export const usePersonalizedSchemes = () => {
           .eq('status', 'active')
           .order('scheme_name');
 
-        const allSchemes = [
+        const allSchemes: Scheme[] = [
           ...(externalSchemes || []).map(scheme => ({
-            ...scheme,
-            match_score: 1,
-            eligibility_criteria: scheme.eligibility_criteria || [],
-            benefits: scheme.benefits || []
+            id: scheme.id,
+            key: scheme.scheme_name,
+            category: scheme.category,
+            status: 'active',
+            created_at: new Date().toISOString(),
+            scheme_type: scheme.scheme_type as 'central' | 'state',
+            translations: {
+              title: scheme.scheme_name,
+              description: scheme.description || '',
+              benefits: Array.isArray(scheme.benefits) ? scheme.benefits : [],
+              eligibility: Array.isArray(scheme.eligibility_criteria) ? scheme.eligibility_criteria : [],
+              documents: []
+            }
           })),
           ...(centralSchemes || []).map(scheme => ({
-            ...scheme,
-            scheme_type: 'central',
-            match_score: 1,
-            eligibility_criteria: scheme.description ? [scheme.description] : [],
-            benefits: []
+            id: scheme.id,
+            key: scheme.scheme_name,
+            category: scheme.category,
+            status: 'active',
+            created_at: new Date().toISOString(),
+            scheme_type: 'central' as const,
+            translations: {
+              title: scheme.scheme_name,
+              description: scheme.description || '',
+              benefits: [],
+              eligibility: [],
+              documents: []
+            }
           }))
         ];
 
@@ -115,7 +122,25 @@ export const usePersonalizedSchemes = () => {
       if (schemesError) throw schemesError;
 
       console.log('Personalized schemes data:', data);
-      setSchemes(data || []);
+
+      // Transform the data to match Scheme interface
+      const transformedSchemes: Scheme[] = (data || []).map((scheme: any) => ({
+        id: scheme.id,
+        key: scheme.scheme_name,
+        category: scheme.category,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        scheme_type: scheme.scheme_type as 'central' | 'state',
+        translations: {
+          title: scheme.scheme_name,
+          description: scheme.description || '',
+          benefits: Array.isArray(scheme.benefits) ? scheme.benefits : [],
+          eligibility: Array.isArray(scheme.eligibility_criteria) ? scheme.eligibility_criteria : [],
+          documents: []
+        }
+      }));
+
+      setSchemes(transformedSchemes);
     } catch (err) {
       console.error('Error fetching personalized schemes:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch schemes');

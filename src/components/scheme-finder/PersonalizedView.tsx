@@ -7,15 +7,7 @@ import SchemeChatbot from '@/components/SchemeChatbot';
 import { usePersonalizedSchemes } from '@/hooks/usePersonalizedSchemes';
 import { useSearchParams } from 'react-router-dom';
 
-interface PersonalizedViewProps {
-  centralSchemes: any[];
-  stateSchemes: any[];
-  filteredSchemes: any[];
-  loading: boolean;
-  searchQuery: string;
-}
-
-const PersonalizedView: React.FC<PersonalizedViewProps> = () => {
+const PersonalizedView: React.FC = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { schemes: personalizedSchemes, loading, fetchPersonalizedSchemes } = usePersonalizedSchemes();
