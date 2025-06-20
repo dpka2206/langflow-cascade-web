@@ -88,6 +88,17 @@ const translations = {
         benefit: 'Collateral-free loans up to ₹10 lakh for business activities'
       }
     },
+    auth: {
+      welcome: 'Welcome to Government Schemes Portal',
+      signin: 'Login',
+      signup: 'Create Account',
+      email: 'Email Address',
+      password: 'Password',
+      fullName: 'Full Name',
+      phone: 'Phone Number',
+      signingIn: 'Logging in...',
+      signingUp: 'Creating account...'
+    },
     common: {
       apply: 'Apply Now',
       learnMore: 'Learn More',
@@ -302,6 +313,17 @@ const translations = {
         eligibility: 'చిన్న వ్యాపార యజమానులు, వ్యవస్థాపకులు మరియు స్వయం ఉపాधిపై ఆధారపడిన వ్యక్తులు',
         benefit: 'వ్యాపార కార్యకలాపాలకు ₹10 లక్షల వరకు తాకట్టు లేని రుణాలు'
       }
+    },
+    auth: {
+      welcome: 'ప్రభుత్వ పథకాల పోర్టల్‌కు స్వాగతం',
+      signin: 'లాగిన్',
+      signup: 'ఖాతా సృష్టించండి',
+      email: 'ఇమెయిల్ చిరునామా',
+      password: 'పాస్‌వర్డ్',
+      fullName: 'పూర్తి పేరు',
+      phone: 'ఫోన్ నంబర్',
+      signingIn: 'లాగిన్ అవుతోంది...',
+      signingUp: 'ఖాతా సృష్టిస్తోంది...'
     },
     common: {
       apply: 'ఇప్పుడే దరఖాస్తు చేసుకోండి',
