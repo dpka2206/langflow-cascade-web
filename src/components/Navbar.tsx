@@ -2,13 +2,14 @@
 import React from 'react';
 import { useTranslation } from '../contexts/TranslationContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Globe, Menu, X } from 'lucide-react';
+import { Globe, Menu, X, User, Settings, LogOut, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -25,15 +26,14 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { key: 'nav.home', href: '/' },
-    { key: 'nav.schemes', href: '/schemes' },
-    { key: 'nav.about', href: '/#about' },
-    { key: 'nav.contact', href: '/#contact' },
+    { key: 'nav.home', href: '/', icon: Home },
+    { key: 'nav.schemes', href: '/schemes', icon: Settings },
+    { key: 'nav.about', href: '/#about', icon: User },
+    { key: 'nav.contact', href: '/#contact', icon: LogOut },
   ];
 
   const handleNavClick = (href: string) => {
     if (href.startsWith('/#')) {
-      // Handle hash links by navigating to home first, then scrolling
       const hash = href.substring(2);
       if (window.location.pathname !== '/') {
         navigate('/');
@@ -56,92 +56,127 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white shadow-2xl sticky top-0 z-50 backdrop-blur-sm">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Enhanced Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="text-xl font-bold text-white hover:text-blue-200">
-              {t('nav.title')}
+            <Link 
+              to="/" 
+              className="text-2xl font-bold text-white hover:text-blue-200 transition-all duration-300 hover:scale-105 flex items-center space-x-2"
+            >
+              <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">S</span>
+              </div>
+              <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                {t('nav.title')}
+              </span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Enhanced Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+            <div className="ml-10 flex items-baseline space-x-2">
               {navItems.map((item) => (
                 <button
                   key={item.key}
                   onClick={() => handleNavClick(item.href)}
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-800 transition-colors cursor-pointer"
+                  className="group relative px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-800/50 transition-all duration-300 cursor-pointer flex items-center space-x-2 hover:scale-105"
                 >
-                  {t(item.key)}
+                  <item.icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-300" />
+                  <span>{t(item.key)}</span>
+                  <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-400 group-hover:w-full transition-all duration-300"></div>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* User Actions and Language Switcher */}
-          <div className="flex items-center space-x-4">
-            {/* User Actions */}
+          {/* Enhanced User Actions and Language Switcher */}
+          <div className="flex items-center space-x-3">
+            {/* Enhanced User Actions */}
             {user ? (
               <div className="flex items-center space-x-3">
-                {userRole === 'admin' ? (
-                  <Link to="/admin">
-                    <Button variant="outline" size="sm" className="text-blue-900 border-white hover:bg-blue-800 hover:text-white">
-                      {t('admin.title')}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-white hover:bg-blue-800/50 transition-all duration-300 hover:scale-105 flex items-center space-x-2"
+                    >
+                      <User className="h-4 w-4" />
+                      <span className="hidden sm:inline">Account</span>
                     </Button>
-                  </Link>
-                ) : (
-                  <Link to="/dashboard">
-                    <Button variant="outline" size="sm" className="text-blue-900 border-white hover:bg-blue-800 hover:text-white">
-                      {t('nav.dashboard')}
-                    </Button>
-                  </Link>
-                )}
-                <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-white hover:bg-blue-800">
-                  {t('nav.signout')}
-                </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white/95 backdrop-blur-sm border shadow-xl">
+                    {userRole === 'admin' ? (
+                      <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
+                        <Settings className="h-4 w-4 mr-2" />
+                        {t('admin.title')}
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer">
+                        <User className="h-4 w-4 mr-2" />
+                        {t('nav.dashboard')}
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t('nav.signout')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : (
               <Link to="/auth">
-                <Button variant="outline" size="sm" className="text-blue-900 border-white hover:bg-blue-800 hover:text-white">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-transparent border-white/50 text-white hover:bg-white hover:text-blue-900 transition-all duration-300 hover:scale-105"
+                >
+                  <User className="h-4 w-4 mr-2" />
                   {t('nav.login')}
                 </Button>
               </Link>
             )}
 
-            {/* Language Switcher */}
+            {/* Enhanced Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="text-blue-900 border-white hover:bg-blue-800 hover:text-white">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-transparent border-white/50 text-white hover:bg-white hover:text-blue-900 transition-all duration-300 hover:scale-105"
+                >
                   <Globe className="h-4 w-4 mr-2" />
-                  {language === 'en' ? 'English' : 'తెలుగు'}
+                  <span className="hidden sm:inline">
+                    {language === 'en' ? 'EN' : 'తె'}
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-white border shadow-lg">
+              <DropdownMenuContent className="bg-white/95 backdrop-blur-sm border shadow-xl">
                 <DropdownMenuItem 
                   onClick={() => setLanguage('en')}
-                  className={`cursor-pointer ${language === 'en' ? 'bg-blue-50' : ''}`}
+                  className={`cursor-pointer ${language === 'en' ? 'bg-blue-50 font-semibold' : ''}`}
                 >
-                  English
+                  🇺🇸 English
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => setLanguage('te')}
-                  className={`cursor-pointer ${language === 'te' ? 'bg-blue-50' : ''}`}
+                  className={`cursor-pointer ${language === 'te' ? 'bg-blue-50 font-semibold' : ''}`}
                 >
-                  తెలుగు
+                  🇮🇳 తెలుగు
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Mobile menu button */}
+            {/* Enhanced Mobile menu button */}
             <div className="md:hidden">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-white hover:bg-blue-800"
+                className="text-white hover:bg-blue-800/50 transition-all duration-300"
               >
                 {isMobileMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -153,26 +188,28 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Enhanced Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-blue-800">
+          <div className="md:hidden animate-fade-in">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-blue-800/50 backdrop-blur-sm">
               {navItems.map((item) => (
                 <button
                   key={item.key}
                   onClick={() => handleNavClick(item.href)}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 transition-colors"
+                  className="group w-full text-left px-3 py-3 rounded-lg text-base font-medium hover:bg-blue-800/50 transition-all duration-300 flex items-center space-x-3"
                 >
-                  {t(item.key)}
+                  <item.icon className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span>{t(item.key)}</span>
                 </button>
               ))}
               {!user && (
                 <Link
                   to="/auth"
-                  className="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-800 transition-colors"
+                  className="group w-full text-left px-3 py-3 rounded-lg text-base font-medium hover:bg-blue-800/50 transition-all duration-300 flex items-center space-x-3"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {t('nav.login')}
+                  <User className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span>{t('nav.login')}</span>
                 </Link>
               )}
             </div>
