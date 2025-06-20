@@ -3,6 +3,8 @@ import React, { useEffect } from 'react';
 
 const SchemeChatbot = () => {
   useEffect(() => {
+    console.log('SchemeChatbot: Starting initialization');
+    
     // Configure the chat widget
     (window as any).ChatWidgetConfig = {
       webhook: {
@@ -24,14 +26,34 @@ const SchemeChatbot = () => {
       }
     };
 
+    console.log('SchemeChatbot: Configuration set', (window as any).ChatWidgetConfig);
+
+    // Check if script is already loaded
+    const existingScript = document.querySelector('script[src*="chat-widget.js"]');
+    if (existingScript) {
+      console.log('SchemeChatbot: Script already exists, removing it first');
+      existingScript.remove();
+    }
+
     // Load the chat widget script
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/gh/funtastic418/chat-widget@main/chat-widget.js';
     script.async = true;
+    
+    script.onload = () => {
+      console.log('SchemeChatbot: Script loaded successfully');
+    };
+    
+    script.onerror = (error) => {
+      console.error('SchemeChatbot: Script failed to load', error);
+    };
+    
     document.head.appendChild(script);
+    console.log('SchemeChatbot: Script added to document head');
 
     // Cleanup function to remove script when component unmounts
     return () => {
+      console.log('SchemeChatbot: Cleaning up');
       if (script.parentNode) {
         script.parentNode.removeChild(script);
       }
@@ -39,6 +61,7 @@ const SchemeChatbot = () => {
       const existingWidget = document.querySelector('[data-chat-widget]');
       if (existingWidget) {
         existingWidget.remove();
+        console.log('SchemeChatbot: Removed existing widget');
       }
     };
   }, []);
