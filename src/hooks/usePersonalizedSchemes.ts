@@ -67,10 +67,20 @@ export const usePersonalizedSchemes = () => {
         return;
       }
 
+      // Convert UserCriteria to a plain object for JSON compatibility
+      const criteriaJson = {
+        gender: userCriteria.gender,
+        age: userCriteria.age,
+        occupation: userCriteria.occupation,
+        income: userCriteria.income,
+        caste: userCriteria.caste,
+        state: userCriteria.state
+      };
+
       // Call the database function to get personalized schemes
       const { data, error: schemesError } = await supabase
         .rpc('get_personalized_schemes', {
-          user_criteria: userCriteria
+          user_criteria: criteriaJson
         });
 
       if (schemesError) throw schemesError;
