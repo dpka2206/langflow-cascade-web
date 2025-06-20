@@ -34,44 +34,41 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Search Bar */}
+    <div className="space-y-4 sm:space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5" />
+        <CardHeader className="pb-3 sm:pb-4">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Search className="h-4 w-4 sm:h-5 sm:w-5" />
             {t('schemeFinder.search')}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           <Input
             placeholder={t('schemeFinder.searchPlaceholder')}
             value={filters.searchQuery}
             onChange={(e) => onFilterChange({ searchQuery: e.target.value })}
-            className="w-full"
+            className="w-full text-sm sm:text-base"
           />
         </CardContent>
       </Card>
 
-      {/* Filters */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
+        <CardHeader className="pb-3 sm:pb-4">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
             {t('schemeFinder.filters')}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Category */}
+        <CardContent className="space-y-3 sm:space-y-4 pt-0">
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               {t('schemeFinder.category')}
             </label>
             <Select value={filters.category} onValueChange={(value) => onFilterChange({ category: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder={t('schemeFinder.selectCategory')} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50">
                 <SelectItem value="all">{t('schemeFinder.allCategories')}</SelectItem>
                 <SelectItem value="agriculture">{t('category.agriculture')}</SelectItem>
                 <SelectItem value="health">{t('category.health')}</SelectItem>
@@ -83,16 +80,15 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
             </Select>
           </div>
 
-          {/* Age Range */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               {t('schemeFinder.ageRange')}
             </label>
             <Select value={filters.age} onValueChange={(value) => onFilterChange({ age: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder={t('schemeFinder.selectAge')} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50">
                 <SelectItem value="all">{t('schemeFinder.allAges')}</SelectItem>
                 <SelectItem value="0-18">0-18 {t('schemeFinder.years')}</SelectItem>
                 <SelectItem value="18-35">18-35 {t('schemeFinder.years')}</SelectItem>
@@ -102,16 +98,15 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
             </Select>
           </div>
 
-          {/* Gender */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               {t('schemeFinder.gender')}
             </label>
             <Select value={filters.gender} onValueChange={(value) => onFilterChange({ gender: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder={t('schemeFinder.selectGender')} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50">
                 <SelectItem value="all">{t('schemeFinder.allGenders')}</SelectItem>
                 <SelectItem value="male">{t('schemeFinder.male')}</SelectItem>
                 <SelectItem value="female">{t('schemeFinder.female')}</SelectItem>
@@ -120,16 +115,15 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
             </Select>
           </div>
 
-          {/* Income Range */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               {t('schemeFinder.incomeRange')}
             </label>
             <Select value={filters.incomeRange} onValueChange={(value) => onFilterChange({ incomeRange: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder={t('schemeFinder.selectIncome')} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50">
                 <SelectItem value="all">{t('schemeFinder.allIncomes')}</SelectItem>
                 <SelectItem value="0-50000">₹0 - ₹50,000</SelectItem>
                 <SelectItem value="50000-100000">₹50,000 - ₹1,00,000</SelectItem>
@@ -139,16 +133,15 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
             </Select>
           </div>
 
-          {/* Caste */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               {t('schemeFinder.caste')}
             </label>
             <Select value={filters.caste} onValueChange={(value) => onFilterChange({ caste: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder={t('schemeFinder.selectCaste')} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50">
                 <SelectItem value="all">{t('schemeFinder.allCastes')}</SelectItem>
                 <SelectItem value="general">{t('schemeFinder.general')}</SelectItem>
                 <SelectItem value="sc">{t('schemeFinder.sc')}</SelectItem>
@@ -158,16 +151,15 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
             </Select>
           </div>
 
-          {/* State */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               {t('schemeFinder.state')}
             </label>
             <Select value={filters.state} onValueChange={(value) => onFilterChange({ state: value })}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm sm:text-base">
                 <SelectValue placeholder={t('schemeFinder.selectState')} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50">
                 <SelectItem value="all">{t('schemeFinder.allStates')}</SelectItem>
                 <SelectItem value="telangana">{t('schemeFinder.telangana')}</SelectItem>
                 <SelectItem value="andhra-pradesh">{t('schemeFinder.andhraPradesh')}</SelectItem>
@@ -179,7 +171,7 @@ const SchemeFinderFilters: React.FC<SchemeFinderFiltersProps> = ({
           <Button 
             variant="outline" 
             onClick={clearFilters}
-            className="w-full"
+            className="w-full text-sm sm:text-base"
           >
             {t('schemeFinder.clearFilters')}
           </Button>
