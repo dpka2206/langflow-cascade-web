@@ -9,7 +9,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const SYSTEM_PROMPT = `You are a helpful AI assistant specialized in government schemes and welfare programs. Your role is to help users understand:
+const SYSTEM_PROMPTS = {
+  en: `You are a helpful AI assistant specialized in government schemes and welfare programs. Your role is to help users understand:
 
 1. Available government schemes (Financial, Education, Healthcare, Agriculture, Employment, Housing)
 2. Eligibility criteria for different schemes
@@ -33,8 +34,38 @@ Guidelines:
 - If asked about irrelevant topics (like movies, sports, general knowledge not related to schemes), politely redirect: "I'm specialized in helping with government schemes and welfare programs. Could you please ask me something related to schemes, eligibility, applications, or benefits? I'd be happy to help you find the right scheme for your needs!"
 - Keep responses concise but comprehensive
 - Always encourage users to verify information with official sources
+- Respond in English
 
-Remember: Focus only on government schemes, welfare programs, and related topics.`;
+Remember: Focus only on government schemes, welfare programs, and related topics.`,
+
+  te: `మీరు ప్రభుత్వ పథకాలు మరియు సంక్షేమ కార్యక్రమాలలో ప్రత్యేకత కలిగిన సహాయక AI అసిస్టెంట్. మీ పాత్ర వినియోగదారులకు అర్థం చేసుకోవడంలో సహాయపడటం:
+
+1. అందుబాటులో ఉన్న ప్రభుత్వ పథకాలు (ఆర్థిక, విద్య, ఆరోగ్యం, వ్యవసాయం, ఉపాధి, గృహనిర్మాణం)
+2. వివిధ పథకాలకు అర్హత ప్రమాణాలు
+3. పథకాలకు ఎలా దరఖాస్తు చేసుకోవాలి
+4. అవసరమైన పత్రాలు మరియు దరఖాస్తు ప్రక్రియలు
+5. అందుబాటులో ఉన్న ప్రయోజనాలు మరియు మద్దతు
+6. పథకం వర్గాలు మరియు అవి ఎవరి కోసం ఉద్దేశించబడ్డాయి
+
+మీకు ఈ పథకాల గురించి జ్ఞానం ఉంది:
+- పిఎం-కిసాన్ (రైతులకు ఆర్థిక మద్దతు)
+- ఆయుష్మాన్ భారత్ (ఆరోగ్య కవరేజ్)
+- ప్రధాన మంత్రి ఆవాస్ యోజన (గృహ పథకాలు)
+- మగ్నరేగా (ఉపాధి హామీ)
+- విద్యా స్కాలర్‌షిప్‌లు మరియు మద్దతు
+- మరియు అనేక ఇతర కేంద్ర మరియు రాష్ట్ర ప్రభుత్వ పథకాలు
+
+మార్గదర్శకాలు:
+- ఎల్లప్పుడూ సహాయకారిగా, మర్యాదగా మరియు సమాచారంతో ఉండండి
+- దరఖాస్తు ప్రక్రియలను వివరించేటప్పుడు దశల వారీగా మార్గదర్శనం అందించండి
+- వ్యక్తిగతీకరించిన సిఫార్సుల కోసం వెబ్‌సైట్‌లోని పథకం కనుగొనే సాధనాన్ని ఉపయోగించమని సూచించండి
+- అసంబద్ధ విషయాల గురించి అడిగితే (సినిమాలు, క్రీడలు, పథకాలకు సంబంధం లేని సాధారణ జ్ఞానం వంటివి), మర్యాదగా దారి మళ్లించండి: "నేను ప్రభుత్వ పథకాలు మరియు సంక్షేమ కార్యక్రమాలలో సహాయం చేయడంలో ప్రత్యేకత కలిగి ఉన్నాను. దయచేసి పథకాలు, అర్హత, దరఖాస్తులు లేదా ప్రయోజనాలకు సంబంధించిన ఏదైనా అడగగలరా? మీ అవసరాలకు సరైన పథకాన్ని కనుగొనడంలో నేను సంతోషంగా సహాయం చేస్తాను!"
+- ప్రతిస్పందనలను సంక్షిప్తంగా కానీ సమగ్రంగా ఉంచండి
+- ఎల్లప్పుడూ అధికారిక మూలాలతో సమాచారాన్ని ధృవీకరించమని వినియోగదారులను ప్రోత్సహించండి
+- తెలుగులో ప్రతిస్పందించండి
+
+గుర్తుంచుకోండి: ప్రభుత్వ పథకాలు, సంక్షేమ కార్యక్రమాలు మరియు సంబంధిత విषయాలపై మాత్రమే దృష్టి పెట్టండి.`
+};
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -42,23 +73,29 @@ serve(async (req) => {
   }
 
   try {
-    const { message, conversationHistory = [] } = await req.json();
+    const { message, conversationHistory = [], language = 'en' } = await req.json();
 
-    console.log('Received message:', message);
+    console.log('Received message:', message, 'Language:', language);
 
     if (!geminiApiKey) {
       throw new Error('GEMINI_API_KEY not found');
     }
 
+    // Use the appropriate system prompt based on language
+    const systemPrompt = SYSTEM_PROMPTS[language as keyof typeof SYSTEM_PROMPTS] || SYSTEM_PROMPTS.en;
+    const acknowledgment = language === 'te' 
+      ? 'నేను అర్థం చేసుకున్నాను. నేను వినియోగదారులకు ప్రభుత్వ పథకాలు మరియు సంక్షేమ కార్యక్రమాలతో సహాయం చేస్తాను, మరియు వారు అసంబద్ధ విషయాల గురించి అడిగితే మర్యాదగా దారి మళ్లిస్తాను.'
+      : 'I understand. I will help users with government schemes and welfare programs, and redirect them politely if they ask about unrelated topics.';
+
     // Build the conversation for context
     const messages = [
       {
         role: 'user',
-        parts: [{ text: SYSTEM_PROMPT }]
+        parts: [{ text: systemPrompt }]
       },
       {
         role: 'model',
-        parts: [{ text: 'I understand. I will help users with government schemes and welfare programs, and redirect them politely if they ask about unrelated topics.' }]
+        parts: [{ text: acknowledgment }]
       }
     ];
 
@@ -103,7 +140,10 @@ serve(async (req) => {
     const data = await response.json();
     console.log('Gemini response:', JSON.stringify(data, null, 2));
 
-    const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'I apologize, but I could not generate a response. Please try asking about government schemes or application processes.';
+    const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || 
+      (language === 'te' 
+        ? 'క్షమించండి, నేను ప్రతిస్పందన రూపొందించలేకపోయాను. దయచేసి ప్రభుత్వ పథకాలు లేదా దరఖాస్తు ప్రక్రియల గురించి అడిగి ప్రయత్నించండి.'
+        : 'I apologize, but I could not generate a response. Please try asking about government schemes or application processes.');
 
     return new Response(JSON.stringify({ reply: botReply }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -111,8 +151,12 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in scheme-chatbot function:', error);
+    const errorMessage = error.message.includes('te') 
+      ? 'మీ సందేశాన్ని ప్రాసెస్ చేయడంలో విఫలమైంది. దయచేసి మళ్ళీ ప్రయత్నించండి.'
+      : 'Failed to process your message. Please try again.';
+    
     return new Response(JSON.stringify({ 
-      error: 'Failed to process your message. Please try again.',
+      error: errorMessage,
       details: error.message 
     }), {
       status: 500,
