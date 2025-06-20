@@ -1,20 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, CheckCircle, XCircle, AlertCircle, FileText, Calendar, User } from 'lucide-react';
-
-interface SchemeApplication {
-  id: string;
-  scheme_name: string;
-  status: string;
-  submitted_at: string | null;
-  estimated_approval_days?: number;
-  application_number?: string;
-  personal_info?: any;
-  uploaded_documents?: any[];
-  created_at: string;
-}
+import { SchemeApplication } from '@/types/schemeApplication';
 
 interface SchemeApplicationStatusProps {
   applications: SchemeApplication[];
