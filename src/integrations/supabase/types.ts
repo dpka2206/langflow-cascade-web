@@ -321,6 +321,10 @@ export type Database = {
           created_at: string
           id: string
           personal_info: Json | null
+          rejection_reason: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           scheme_id: string
           status: string
           submitted_at: string | null
@@ -333,6 +337,10 @@ export type Database = {
           created_at?: string
           id?: string
           personal_info?: Json | null
+          rejection_reason?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           scheme_id: string
           status?: string
           submitted_at?: string | null
@@ -345,6 +353,10 @@ export type Database = {
           created_at?: string
           id?: string
           personal_info?: Json | null
+          rejection_reason?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           scheme_id?: string
           status?: string
           submitted_at?: string | null

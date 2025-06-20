@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
   const { user, userRole, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -21,6 +22,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
 
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // Redirect admins to admin dashboard if they try to access citizen routes
+  if (userRole === 'admin' && requiredRole === 'citizen') {
+    return <Navigate to="/admin" replace />;
+  }
+
+  // Redirect citizens to regular dashboard if they try to access admin routes
+  if (userRole === 'citizen' && requiredRole === 'admin') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   if (requiredRole && userRole !== requiredRole) {

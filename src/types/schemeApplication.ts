@@ -13,6 +13,16 @@ export interface SchemeApplication {
   scheme_name: string;
   estimated_approval_days?: number;
   application_number?: string;
+  reviewed_by?: string;
+  reviewed_at?: string;
+  review_notes?: string;
+  rejection_reason?: string;
 }
 
 export type ApplicationStatus = 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected';
+
+export interface ApplicationReview {
+  status: ApplicationStatus;
+  review_notes?: string;
+  rejection_reason?: string;
+}
