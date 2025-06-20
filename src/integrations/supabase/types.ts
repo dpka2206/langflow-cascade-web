@@ -105,6 +105,53 @@ export type Database = {
         }
         Relationships: []
       }
+      scheme_applications: {
+        Row: {
+          application_data: Json | null
+          created_at: string
+          id: string
+          personal_info: Json | null
+          scheme_id: string
+          status: string
+          submitted_at: string | null
+          updated_at: string
+          uploaded_documents: Json | null
+          user_id: string
+        }
+        Insert: {
+          application_data?: Json | null
+          created_at?: string
+          id?: string
+          personal_info?: Json | null
+          scheme_id: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+          uploaded_documents?: Json | null
+          user_id: string
+        }
+        Update: {
+          application_data?: Json | null
+          created_at?: string
+          id?: string
+          personal_info?: Json | null
+          scheme_id?: string
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+          uploaded_documents?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheme_applications_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scheme_translations: {
         Row: {
           benefits: string[] | null

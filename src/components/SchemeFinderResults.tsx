@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, Users, DollarSign, FileText, Play } from 'lucide-react';
 import { Scheme } from '@/pages/SchemeFinderPage';
 import SchemeDetailModal from '@/components/SchemeDetailModal';
+import SchemeApplicationForm from '@/components/SchemeApplicationForm';
 
 interface SchemeFinderResultsProps {
   schemes: Scheme[];
@@ -21,6 +21,7 @@ const SchemeFinderResults: React.FC<SchemeFinderResultsProps> = ({
 }) => {
   const { t } = useTranslation();
   const [selectedScheme, setSelectedScheme] = useState<Scheme | null>(null);
+  const [applicationScheme, setApplicationScheme] = useState<Scheme | null>(null);
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -134,7 +135,11 @@ const SchemeFinderResults: React.FC<SchemeFinderResultsProps> = ({
                 <Play className="h-4 w-4 mr-2" />
                 {t('schemeFinder.knowMore')}
               </Button>
-              <Button variant="outline" className="flex-1">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setApplicationScheme(scheme)}
+              >
                 {t('common.apply')}
               </Button>
             </CardFooter>
@@ -147,6 +152,14 @@ const SchemeFinderResults: React.FC<SchemeFinderResultsProps> = ({
           scheme={selectedScheme}
           isOpen={!!selectedScheme}
           onClose={() => setSelectedScheme(null)}
+        />
+      )}
+
+      {applicationScheme && (
+        <SchemeApplicationForm
+          scheme={applicationScheme}
+          isOpen={!!applicationScheme}
+          onClose={() => setApplicationScheme(null)}
         />
       )}
     </>
