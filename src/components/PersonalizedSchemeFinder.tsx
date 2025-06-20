@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ const PersonalizedSchemeFinder = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
   const [data, setData] = useState<WizardData>({
     gender: '',
     age: '',
@@ -41,6 +42,45 @@ const PersonalizedSchemeFinder = () => {
   });
 
   const totalSteps = 6;
+
+  // Load saved user criteria when component mounts
+  useEffect(() => {
+    const loadSavedCriteria = async () => {
+      if (!user) {
+        setDataLoading(false);
+        return;
+      }
+
+      try {
+        console.log('Loading saved criteria for user:', user.id);
+        const { data: savedCriteria, error } = await supabase
+          .from('user_personalized_criteria')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error loading saved criteria:', error);
+        } else if (savedCriteria) {
+          console.log('Found saved criteria:', savedCriteria);
+          setData({
+            gender: savedCriteria.gender || '',
+            age: savedCriteria.age || '',
+            occupation: savedCriteria.occupation || '',
+            income: savedCriteria.income || '',
+            caste: savedCriteria.caste || '',
+            state: savedCriteria.state || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user criteria:', error);
+      } finally {
+        setDataLoading(false);
+      }
+    };
+
+    loadSavedCriteria();
+  }, [user]);
 
   const updateData = (field: keyof WizardData, value: string) => {
     setData(prev => ({ ...prev, [field]: value }));
@@ -68,6 +108,8 @@ const PersonalizedSchemeFinder = () => {
     }
 
     try {
+      console.log('Saving user criteria:', criteriaData);
+      
       // Check if user already has criteria saved
       const { data: existingCriteria } = await supabase
         .from('user_personalized_criteria')
@@ -86,10 +128,12 @@ const PersonalizedSchemeFinder = () => {
             income: criteriaData.income,
             caste: criteriaData.caste,
             state: criteriaData.state,
+            updated_at: new Date().toISOString()
           })
           .eq('user_id', user.id);
 
         if (error) throw error;
+        console.log('Updated existing criteria');
       } else {
         // Insert new criteria
         const { error } = await supabase
@@ -105,6 +149,7 @@ const PersonalizedSchemeFinder = () => {
           });
 
         if (error) throw error;
+        console.log('Inserted new criteria');
       }
 
       return true;
@@ -182,6 +227,15 @@ const PersonalizedSchemeFinder = () => {
     }
   };
 
+  // Show loading state while fetching saved data
+  if (dataLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-lavender-50 to-mint-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-lavender-50 to-mint-50 p-2 sm:p-4">
       <div className="max-w-2xl mx-auto">
@@ -196,6 +250,13 @@ const PersonalizedSchemeFinder = () => {
             <div className="mt-4 p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-lg mx-2 sm:mx-0">
               <p className="text-sm sm:text-base text-yellow-800">
                 Please <Link to="/auth" className="text-yellow-900 underline font-semibold">login</Link> to save your preferences and get personalized recommendations.
+              </p>
+            </div>
+          )}
+          {user && Object.values(data).some(value => value !== '') && (
+            <div className="mt-4 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg mx-2 sm:mx-0">
+              <p className="text-sm sm:text-base text-green-800">
+                We found your saved preferences! You can update them below or proceed directly to get recommendations.
               </p>
             </div>
           )}
