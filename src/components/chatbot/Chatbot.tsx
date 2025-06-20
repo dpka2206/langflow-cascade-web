@@ -42,21 +42,21 @@ const Chatbot: React.FC = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
         <Button
           onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          <MessageCircle className="h-6 w-6" />
+          <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-96 h-[500px]">
+    <div className="fixed bottom-4 right-4 z-50 w-[calc(100vw-2rem)] max-w-sm sm:bottom-6 sm:right-6 sm:w-96 h-[80vh] max-h-[600px]">
       <Card className="h-full flex flex-col shadow-2xl border-2 border-purple-100">
-        <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-t-lg flex-shrink-0">
+        <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-t-lg flex-shrink-0 p-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold">AI Assistant</CardTitle>
             <div className="flex gap-2">
@@ -78,13 +78,13 @@ const Chatbot: React.FC = () => {
               </Button>
             </div>
           </div>
-          <p className="text-sm text-purple-100">
+          <p className="text-sm text-purple-100 mt-1">
             Ask me about schemes, applications, and more!
           </p>
         </CardHeader>
         
-        <CardContent className="flex-1 flex flex-col p-0">
-          <div className="flex-1 overflow-y-auto p-4 space-y-2">
+        <CardContent className="flex-1 flex flex-col p-0 min-h-0">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2">
             {messages.map((message) => (
               <ChatMessage
                 key={message.id}
@@ -95,7 +95,7 @@ const Chatbot: React.FC = () => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-2xl px-4 py-3 max-w-[80%]">
+                <div className="bg-gray-100 rounded-2xl px-4 py-3 max-w-[85%]">
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -107,7 +107,7 @@ const Chatbot: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
           
-          <div className="border-t border-gray-200 p-4">
+          <div className="border-t border-gray-200 p-3 sm:p-4 flex-shrink-0">
             <div className="flex gap-2">
               <Input
                 value={inputMessage}
@@ -115,13 +115,14 @@ const Chatbot: React.FC = () => {
                 onKeyPress={handleKeyPress}
                 placeholder="Type your message..."
                 disabled={isLoading}
-                className="flex-1 border-purple-200 focus:border-purple-400"
+                className="flex-1 border-purple-200 focus:border-purple-400 text-sm"
               />
               <AudioRecordButton onTranscription={handleAudioTranscription} />
               <Button
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || isLoading}
-                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 flex-shrink-0"
+                size="sm"
               >
                 <Send className="h-4 w-4" />
               </Button>

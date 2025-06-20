@@ -22,20 +22,20 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, isUser, timestamp })
   };
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
+      <div className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-3 py-2 sm:px-4 sm:py-3 ${
         isUser 
           ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white' 
           : 'bg-gray-100 text-gray-800'
       }`}>
         <div className="flex items-start justify-between gap-2">
-          <p className="text-sm leading-relaxed">{content}</p>
+          <p className="text-sm leading-relaxed break-words flex-1">{content}</p>
           {!isUser && (
             <Button
               variant="ghost"
               size="sm"
               onClick={handleSpeak}
-              className="flex-shrink-0 h-6 w-6 p-0 hover:bg-gray-200 rounded-full"
+              className="flex-shrink-0 h-6 w-6 p-0 hover:bg-gray-200 rounded-full ml-2"
             >
               {isSpeaking ? (
                 <VolumeX className="h-3 w-3" />
