@@ -1,22 +1,16 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface TranslationContextType {
-  language: string;
-  setLanguage: (lang: string) => void;
-  t: (key: string) => string;
+interface Translation {
+  [key: string]: any;
 }
 
-const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+interface TranslationContextType {
+  t: (key: string) => string;
+  language: string;
+  setLanguage: (lang: string) => void;
+}
 
-export const useTranslation = () => {
-  const context = useContext(TranslationContext);
-  if (!context) {
-    throw new Error('useTranslation must be used within a TranslationProvider');
-  }
-  return context;
-};
-
-const translations = {
+const translations: Record<string, Translation> = {
   en: {
     nav: {
       title: 'GovSchemes',
@@ -252,7 +246,7 @@ const translations = {
       contact: 'సంప్రదించండి',
       dashboard: 'డాష్‌బోర్డ్',
       admin: 'అడ్మిన్ ప్యానెల్',
-      profile: 'నా ప్రొఫైల్',
+      profile: 'నా ప్రోఫైల్',
       login: 'సైన్ ఇన్',
       signout: 'సైన్ అవుట్'
     },
@@ -320,26 +314,25 @@ const translations = {
       signup: 'ఖాతా సృష్టించండి',
       email: 'ఇమెయిల్ చిరునామా',
       password: 'పాస్‌వర్డ్',
-      fullName: 'పూర్తి పేరు',
-      phone: 'ఫోన్ నంబర్',
-      signingIn: 'లాగిన్ అవుతోంది...',
-      signingUp: 'ఖాతా సృష్టిస్తోంది...'
+      rememberMe: 'నన్ను గుర్తుంచుకో',
+      forgotPassword: 'పాస్‌వర్డ్ మర్చిపోయారా?',
+      loginButton: 'లాగిన్',
+      signupButton: 'ఖాతా సృష్టించండి',
+      switchToSignup: "Don't have an account? Create one",
+      switchToLogin: 'Already have an account? Login',
+      or: 'లేదా'
     },
     common: {
       apply: 'ఇప్పుడే దరఖాస్తు చేసుకోండి',
-      learnMore: 'మరింత తెలుసుకోండి',
-      eligibility: 'అర్హత',
-      benefit: 'ప్రయోజనాలు',
-      loading: 'లోడ్ చేస్తోంది...',
-      error: 'ఏదో తప్పు జరిగింది',
-      success: 'విజయం!',
-      search: 'వెతకండి',
-      filter: 'ఫిల్టర్',
-      clear: 'క్లియర్',
+      back: 'వెనుకకు',
+      next: 'తదుపరి',
       submit: 'సమర్పించండి',
       cancel: 'రద్దు చేయండి',
-      next: 'తరువాత',
-      previous: 'మునుపటి'
+      close: 'మూసివేయండి',
+      loading: 'లోడ్ అవుతోంది...',
+      save: 'సేవ్ చేయండి',
+      edit: 'సవరించండి',
+      delete: 'తొలగించండి'
     },
     schemeFinder: {
       title: 'మీ పరిపూర్ణ పథకాన్ని కనుగొనండి',
@@ -383,20 +376,72 @@ const translations = {
       karnataka: 'కర్ణాటక',
       knowMore: 'మరింత తెలుసుకోండి',
       noResults: 'పథకాలు కనుగొనబడలేదు',
-      noResultsSearch: 'మీ శోధన పదాలు లేదా ఫిల్టర్‌లను సర్దుబాటు చేయండి',
-      noResultsFilter: 'మరిన్ని ఫలితాలను చూడటానికి మీ ఫిల్టర్‌లను సర్దుబాటు చేయండి',
+      noResultsSearch: 'మీ శోధన పదాలు లేదా ఫిల్టర్‌లను సర్దుబాటు చేయడానికి ప్రయత్నించండి',
+      noResultsFilter: 'మరిన్ని ఫలితాలను చూడటానికి మీ ఫిల్టర్‌లను సర్దుబాటు చేయడానికి ప్రయత్నించండి',
       resultsFound: 'పథకాలు కనుగొనబడ్డాయి',
       noDescription: 'వర్ణన అందుబాటులో లేదు'
+    },
+    wizard: {
+      title: 'వ్యక్తిగతీకరించిన పథక కనుగొనే సాధనం',
+      subtitle: 'మీకు సరిపోయే పథకాలను కనుగొనడానికి కొన్ని ప్రశ్నలకు సమాధానం ఇవ్వండి',
+      findSchemes: 'నా పథకాలను కనుగొనండి',
+      gender: {
+        title: 'మీ లింగం ఏమిటి?',
+        subtitle: 'ఇది లింగ-నిర్దిష్ట ప్రయోజనాలతో పథకాలను కనుగొనడంలో మాకు సహాయపడుతుంది',
+        male: 'పురుషుడు',
+        female: 'మహిళ',
+        other: 'ఇతర'
+      },
+      age: {
+        title: 'మీ వయస్సు ఎంత?',
+        subtitle: 'వయస్సు-నిర్దిష్ట పథకాలు మరియు ప్రయోజనాలు అందుబాటులో ఉన్నాయి',
+        under18: '18 లోపు',
+        young: '18-35 సంవత్సరాలు',
+        middle: '36-60 సంవత్సరాలు',
+        senior: '60 మించి'
+      },
+      occupation: {
+        title: 'మీ వృత్తి ఏమిటి?',
+        subtitle: 'మీ వృత్తి ఆధారంగా పథకాలను కనుగొనండి',
+        farmer: 'రైతు',
+        student: 'విద్యార్థి',
+        employed: 'ఉద్యోగి',
+        selfEmployed: 'స్వయం ఉపాధి',
+        unemployed: 'నిరుద్యోగి',
+        healthcare: 'ఆరోగ్య కార్యకర్త'
+      },
+      income: {
+        title: 'మీ వార్షిక ఆదాయం ఎంత?',
+        subtitle: 'వివిధ పథకాలకు ఆదాయ ఆధారిత అర్హత',
+        below2lakh: '₹2 లక్షల కంటే తక్కువ',
+        between2and5lakh: '₹2-5 లక్షలు',
+        between5and10lakh: '₹5-10 లక్షలు',
+        above10lakh: '₹10 లక్షలకు మించి'
+      },
+      caste: {
+        title: 'మీ కుల వర్గం ఏమిటి?',
+        subtitle: 'రిజర్వేషన్ మరియు వర్గ-నిర్దిష్ట పథకాలను కనుగొనండి',
+        general: 'సాధారణ',
+        obc: 'ఓబిసి',
+        sc: 'ఎస్సి',
+        st: 'ఎస్టి'
+      },
+      state: {
+        title: 'మీరు ఏ రాష్ట్రానికి చెందినవారు?',
+        subtitle: 'రాష్ట్ర-నిర్దిష్ట పథకాలు మరియు ప్రయోజనాలు'
+      }
     }
   }
 };
 
-export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+
+export const TranslationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState('en');
 
   const t = (key: string): string => {
     const keys = key.split('.');
-    let value: any = translations[language as keyof typeof translations];
+    let value: any = translations[language];
     
     for (const k of keys) {
       value = value?.[k];
@@ -406,8 +451,16 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   return (
-    <TranslationContext.Provider value={{ language, setLanguage, t }}>
+    <TranslationContext.Provider value={{ t, language, setLanguage }}>
       {children}
     </TranslationContext.Provider>
   );
+};
+
+export const useTranslation = () => {
+  const context = useContext(TranslationContext);
+  if (context === undefined) {
+    throw new Error('useTranslation must be used within a TranslationProvider');
+  }
+  return context;
 };

@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import SchemeFinderPage from "./pages/SchemeFinderPage";
 import NotificationPreferences from "./pages/NotificationPreferences";
+import PersonalizedSchemeFinderPage from "./pages/PersonalizedSchemeFinderPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/schemes" element={<SchemeFinderPage />} />
+              <Route path="/personalized-finder" element={<PersonalizedSchemeFinderPage />} />
               <Route 
                 path="/dashboard" 
                 element={

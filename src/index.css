@@ -45,6 +45,11 @@
     --sidebar-accent-foreground: 262 83% 15%;
     --sidebar-border: 270 6% 85%;
     --sidebar-ring: 262 83% 58%;
+
+    /* Custom wizard colors */
+    --sky-50: 240 100% 98%;
+    --lavender-50: 270 100% 98%;
+    --mint-50: 150 100% 98%;
   }
 
   .dark {
@@ -103,7 +108,7 @@
       linear-gradient(45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
       linear-gradient(-45deg, rgba(147, 51, 234, 0.08) 25%, transparent 25%), 
       linear-gradient(45deg, transparent 75%, rgba(147, 51, 234, 0.08) 75%), 
-      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234, 0.08) 75%);
+      linear-gradient(-45deg, transparent 75%, rgba(147, 51, 234,0.08) 75%);
     background-size: 30px 30px;
     background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
   }
@@ -145,5 +150,18 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* Wizard-specific gradients */
+  .from-sky-50 {
+    --tw-gradient-from: hsl(var(--sky-50));
+  }
+  
+  .via-lavender-50 {
+    --tw-gradient-via: hsl(var(--lavender-50));
+  }
+  
+  .to-mint-50 {
+    --tw-gradient-to: hsl(var(--mint-50));
   }
 }
