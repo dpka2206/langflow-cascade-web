@@ -147,6 +147,78 @@ export type Database = {
         }
         Relationships: []
       }
+      government_services: {
+        Row: {
+          category: string
+          created_at: string
+          department: string | null
+          description: string | null
+          eligibility_criteria: string[] | null
+          fees: string | null
+          icon_name: string | null
+          id: string
+          is_featured: boolean | null
+          ministry: string | null
+          priority_order: number | null
+          processing_time: string | null
+          required_documents: string[] | null
+          service_code: string | null
+          service_name: string
+          service_type: string | null
+          service_url: string
+          status: string | null
+          sub_category: string | null
+          target_audience: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          eligibility_criteria?: string[] | null
+          fees?: string | null
+          icon_name?: string | null
+          id?: string
+          is_featured?: boolean | null
+          ministry?: string | null
+          priority_order?: number | null
+          processing_time?: string | null
+          required_documents?: string[] | null
+          service_code?: string | null
+          service_name: string
+          service_type?: string | null
+          service_url: string
+          status?: string | null
+          sub_category?: string | null
+          target_audience?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          eligibility_criteria?: string[] | null
+          fees?: string | null
+          icon_name?: string | null
+          id?: string
+          is_featured?: boolean | null
+          ministry?: string | null
+          priority_order?: number | null
+          processing_time?: string | null
+          required_documents?: string[] | null
+          service_code?: string | null
+          service_name?: string
+          service_type?: string | null
+          service_url?: string
+          status?: string | null
+          sub_category?: string | null
+          target_audience?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notification_logs: {
         Row: {
           channel: string
@@ -474,6 +546,74 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      service_categories: {
+        Row: {
+          category_code: string | null
+          category_name: string
+          created_at: string
+          description: string | null
+          display_order: number | null
+          icon_name: string | null
+          id: string
+          is_active: boolean | null
+        }
+        Insert: {
+          category_code?: string | null
+          category_name: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean | null
+        }
+        Update: {
+          category_code?: string | null
+          category_name?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
+      service_usage_stats: {
+        Row: {
+          clicked_at: string | null
+          id: string
+          ip_address: unknown | null
+          service_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clicked_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          service_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clicked_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          service_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_usage_stats_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "government_services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_personalized_criteria: {
         Row: {

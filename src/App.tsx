@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import SchemeFinderPage from "./pages/SchemeFinderPage";
 import NotificationPreferences from "./pages/NotificationPreferences";
 import PersonalizedSchemeFinderPage from "./pages/PersonalizedSchemeFinderPage";
+import ServicesPage from "./pages/ServicesPage";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/schemes" element={<SchemeFinderPage />} />
+              <Route path="/services" element={<ServicesPage />} />
               <Route path="/personalized-finder" element={<PersonalizedSchemeFinderPage />} />
               <Route 
                 path="/dashboard" 
