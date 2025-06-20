@@ -14,7 +14,7 @@ const SchemesSection = () => {
       descriptionKey: 'scheme.pmkisan.description',
       eligibilityKey: 'scheme.pmkisan.eligibility',
       benefitKey: 'scheme.pmkisan.benefit',
-      category: t('category.agriculture'),
+      category: 'Agriculture',
       bgColor: 'bg-green-50'
     },
     {
@@ -23,7 +23,7 @@ const SchemesSection = () => {
       descriptionKey: 'scheme.pmjay.description',
       eligibilityKey: 'scheme.pmjay.eligibility',
       benefitKey: 'scheme.pmjay.benefit',
-      category: t('category.health'),
+      category: 'Healthcare',
       bgColor: 'bg-red-50'
     },
     {
@@ -32,7 +32,7 @@ const SchemesSection = () => {
       descriptionKey: 'scheme.pmay.description',
       eligibilityKey: 'scheme.pmay.eligibility',
       benefitKey: 'scheme.pmay.benefit',
-      category: t('category.housing'),
+      category: 'Housing',
       bgColor: 'bg-yellow-50'
     },
     {
@@ -41,7 +41,7 @@ const SchemesSection = () => {
       descriptionKey: 'scheme.mudra.description',
       eligibilityKey: 'scheme.mudra.eligibility',
       benefitKey: 'scheme.mudra.benefit',
-      category: t('category.employment'),
+      category: 'Employment',
       bgColor: 'bg-purple-50'
     }
   ];
@@ -51,7 +51,7 @@ const SchemesSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {t('schemes.title')}
+            {t('home.featuredSchemes')}
           </h2>
           <div className="w-24 h-1 bg-blue-600 mx-auto mb-8"></div>
         </div>
