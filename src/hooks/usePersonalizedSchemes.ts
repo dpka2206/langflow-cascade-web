@@ -63,7 +63,36 @@ export const usePersonalizedSchemes = () => {
       }
 
       if (!userCriteria) {
-        setSchemes([]);
+        // If no criteria, fetch all schemes with proper names
+        const { data: externalSchemes } = await supabase
+          .from('external_schemes')
+          .select('id, scheme_name, description, category, scheme_type, eligibility_criteria, benefits')
+          .eq('status', 'active')
+          .order('scheme_name');
+
+        const { data: centralSchemes } = await supabase
+          .from('central_government_schemes')
+          .select('id, scheme_name, description, category')
+          .eq('status', 'active')
+          .order('scheme_name');
+
+        const allSchemes = [
+          ...(externalSchemes || []).map(scheme => ({
+            ...scheme,
+            match_score: 1,
+            eligibility_criteria: scheme.eligibility_criteria || [],
+            benefits: scheme.benefits || []
+          })),
+          ...(centralSchemes || []).map(scheme => ({
+            ...scheme,
+            scheme_type: 'central',
+            match_score: 1,
+            eligibility_criteria: scheme.description ? [scheme.description] : [],
+            benefits: []
+          }))
+        ];
+
+        setSchemes(allSchemes);
         return;
       }
 
@@ -85,6 +114,7 @@ export const usePersonalizedSchemes = () => {
 
       if (schemesError) throw schemesError;
 
+      console.log('Personalized schemes data:', data);
       setSchemes(data || []);
     } catch (err) {
       console.error('Error fetching personalized schemes:', err);

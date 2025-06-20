@@ -1,27 +1,56 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SchemeFinderResults from '@/components/SchemeFinderResults';
 import SchemeChatbot from '@/components/SchemeChatbot';
-import { Scheme } from '@/types/scheme';
+import { usePersonalizedSchemes } from '@/hooks/usePersonalizedSchemes';
+import { useSearchParams } from 'react-router-dom';
 
 interface PersonalizedViewProps {
-  centralSchemes: Scheme[];
-  stateSchemes: Scheme[];
-  filteredSchemes: Scheme[];
+  centralSchemes: any[];
+  stateSchemes: any[];
+  filteredSchemes: any[];
   loading: boolean;
   searchQuery: string;
 }
 
-const PersonalizedView: React.FC<PersonalizedViewProps> = ({
-  centralSchemes,
-  stateSchemes,
-  filteredSchemes,
-  loading,
-  searchQuery
-}) => {
+const PersonalizedView: React.FC<PersonalizedViewProps> = () => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const { schemes: personalizedSchemes, loading, fetchPersonalizedSchemes } = usePersonalizedSchemes();
+
+  useEffect(() => {
+    // Get user criteria from URL params
+    const criteria = {
+      gender: searchParams.get('gender') || '',
+      age: searchParams.get('age') || '',
+      occupation: searchParams.get('occupation') || '',
+      income: searchParams.get('income') || '',
+      caste: searchParams.get('caste') || '',
+      state: searchParams.get('state') || ''
+    };
+
+    // Only fetch if we have criteria
+    if (Object.values(criteria).some(value => value && value !== '')) {
+      fetchPersonalizedSchemes(criteria);
+    } else {
+      fetchPersonalizedSchemes();
+    }
+  }, [searchParams, fetchPersonalizedSchemes]);
+
+  // Filter schemes by type
+  const centralSchemes = personalizedSchemes.filter(scheme => 
+    scheme.scheme_type === 'central'
+  );
+  
+  const stateSchemes = personalizedSchemes.filter(scheme => 
+    scheme.scheme_type === 'state' || scheme.scheme_type === 'external'
+  );
+
+  console.log('Personalized schemes:', personalizedSchemes);
+  console.log('Central schemes:', centralSchemes);
+  console.log('State schemes:', stateSchemes);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-lavender-50 to-mint-50">
@@ -44,7 +73,7 @@ const PersonalizedView: React.FC<PersonalizedViewProps> = ({
               {t('schemeFinder.stateSchemes')} ({stateSchemes.length})
             </TabsTrigger>
             <TabsTrigger value="all" className="text-sm font-medium">
-              {t('schemeFinder.allSchemes')} ({filteredSchemes.length})
+              {t('schemeFinder.allSchemes')} ({personalizedSchemes.length})
             </TabsTrigger>
           </TabsList>
 
@@ -52,7 +81,7 @@ const PersonalizedView: React.FC<PersonalizedViewProps> = ({
             <SchemeFinderResults 
               schemes={centralSchemes}
               loading={loading}
-              searchQuery={searchQuery}
+              searchQuery=""
             />
           </TabsContent>
 
@@ -60,15 +89,15 @@ const PersonalizedView: React.FC<PersonalizedViewProps> = ({
             <SchemeFinderResults 
               schemes={stateSchemes}
               loading={loading}
-              searchQuery={searchQuery}
+              searchQuery=""
             />
           </TabsContent>
 
           <TabsContent value="all" className="space-y-6">
             <SchemeFinderResults 
-              schemes={filteredSchemes}
+              schemes={personalizedSchemes}
               loading={loading}
-              searchQuery={searchQuery}
+              searchQuery=""
             />
           </TabsContent>
         </Tabs>
