@@ -4,7 +4,6 @@ import { useTranslation } from '@/contexts/TranslationContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SchemeFinderFilters from '@/components/SchemeFinderFilters';
 import SchemeFinderResults from '@/components/SchemeFinderResults';
-import SchemeChatbot from '@/components/SchemeChatbot';
 import { Scheme, FilterState } from '@/types/scheme';
 
 interface RegularViewProps {
@@ -94,8 +93,6 @@ const RegularView: React.FC<RegularViewProps> = ({
           </div>
         </div>
       </div>
-      
-      <SchemeChatbot />
     </div>
   );
 };

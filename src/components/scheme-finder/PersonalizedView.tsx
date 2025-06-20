@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SchemeFinderResults from '@/components/SchemeFinderResults';
-import SchemeChatbot from '@/components/SchemeChatbot';
 import { usePersonalizedSchemes } from '@/hooks/usePersonalizedSchemes';
 import { useSearchParams } from 'react-router-dom';
 
@@ -94,8 +93,6 @@ const PersonalizedView: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
-      
-      <SchemeChatbot />
     </div>
   );
 };
