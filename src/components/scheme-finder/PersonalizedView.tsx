@@ -37,7 +37,7 @@ const PersonalizedView: React.FC = () => {
   );
   
   const stateSchemes = personalizedSchemes.filter(scheme => 
-    scheme.scheme_type === 'state' || scheme.scheme_type === 'external'
+    scheme.scheme_type === 'state'
   );
 
   console.log('Personalized schemes:', personalizedSchemes);
