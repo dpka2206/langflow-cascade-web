@@ -26,23 +26,30 @@ const HeroSection = () => {
   };
 
   const stats = [
-    { icon: Users, value: '50,000+', label: 'Citizens Served', color: 'from-blue-500 to-cyan-500' },
-    { icon: Award, value: '1,200+', label: 'Active Schemes', color: 'from-purple-500 to-pink-500' },
-    { icon: Clock, value: '24/7', label: 'Support Available', color: 'from-green-500 to-emerald-500' },
+    { icon: Users, value: '50,000+', label: 'Citizens Served' },
+    { icon: Award, value: '1,200+', label: 'Active Schemes' },
+    { icon: Clock, value: '24/7', label: 'Support Available' },
   ];
 
   return (
-    <div className="relative bg-gradient-to-br from-indigo-900 via-blue-900 to-purple-900 text-white overflow-hidden min-h-screen flex items-center">
-      {/* Animated background elements */}
+    <div className="relative bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 text-white overflow-hidden min-h-screen flex items-center">
+      {/* Textured background pattern */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3Ccircle cx='0' cy='30' r='4'/%3E%3Ccircle cx='60' cy='30' r='4'/%3E%3Ccircle cx='30' cy='0' r='4'/%3E%3Ccircle cx='30' cy='60' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+
+      {/* Subtle animated background elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/3 w-80 h-80 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-2000"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white/5 rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/3 w-80 h-80 bg-purple-300/10 rounded-full mix-blend-overlay filter blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-white/5 rounded-full mix-blend-overlay filter blur-3xl animate-pulse delay-2000"></div>
       </div>
 
       {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <div
             key={i}
             className="absolute animate-pulse"
@@ -53,24 +60,24 @@ const HeroSection = () => {
               animationDuration: `${2 + Math.random() * 2}s`
             }}
           >
-            <Star className="h-2 w-2 text-white/30" />
+            <Star className="h-2 w-2 text-white/20" />
           </div>
         ))}
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20 text-center">
         <div className="inline-flex items-center px-6 py-3 rounded-full bg-white/10 backdrop-blur-lg border border-white/20 mb-8 animate-fade-in shadow-2xl">
-          <Sparkles className="h-5 w-5 mr-3 text-yellow-300 animate-pulse" />
-          <span className="text-sm font-semibold tracking-wide">✨ Empowering Citizens Through Digital Innovation</span>
+          <Sparkles className="h-5 w-5 mr-3 text-purple-200 animate-pulse" />
+          <span className="text-sm font-semibold tracking-wide text-purple-100">✨ Empowering Citizens Through Digital Innovation</span>
         </div>
 
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight animate-fade-in">
-          <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent drop-shadow-2xl">
+          <span className="bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent drop-shadow-2xl">
             {t('hero.title')}
           </span>
         </h1>
 
-        <p className="text-xl md:text-2xl mb-16 max-w-4xl mx-auto leading-relaxed text-blue-100 animate-fade-in-delay font-light">
+        <p className="text-xl md:text-2xl mb-16 max-w-4xl mx-auto leading-relaxed text-purple-100 animate-fade-in-delay font-light">
           {t('hero.subtitle')}
         </p>
         
@@ -84,13 +91,13 @@ const HeroSection = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={t('hero.search.placeholder')}
-                className="pl-14 py-6 text-lg text-white placeholder-white/70 bg-transparent border-0 rounded-2xl shadow-none focus:ring-2 focus:ring-white/30 font-medium"
+                className="pl-14 py-6 text-lg text-white placeholder-white/70 bg-transparent border-0 rounded-2xl shadow-none focus:ring-2 focus:ring-purple-300/50 font-medium"
               />
             </div>
             <Button 
               onClick={handleSearch}
               size="lg" 
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-10 py-6 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group border-0 text-lg"
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-10 py-6 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group border-0 text-lg"
             >
               <span>{t('hero.search.button')}</span>
               <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform duration-300" />
@@ -104,13 +111,13 @@ const HeroSection = () => {
               key={index}
               className="text-center p-8 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 group hover:bg-white/15 transition-all duration-500 hover:scale-105 hover:-translate-y-2 shadow-2xl"
             >
-              <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 backdrop-blur-sm shadow-lg`}>
+              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 backdrop-blur-sm shadow-lg">
                 <stat.icon className="h-10 w-10 text-white" />
               </div>
-              <div className="text-4xl font-bold mb-3 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+              <div className="text-4xl font-bold mb-3 text-white">
                 {stat.value}
               </div>
-              <div className="text-blue-200 font-semibold text-lg">{stat.label}</div>
+              <div className="text-purple-200 font-semibold text-lg">{stat.label}</div>
             </div>
           ))}
         </div>
